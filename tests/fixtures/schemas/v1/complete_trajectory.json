@@ -1,0 +1,180 @@
+{
+  "schema_version": "1",
+  "run_id": "fixture-run-001",
+  "task": {
+    "schema_version": "1",
+    "task_id": "paper-summary-001",
+    "objective": "Summarise the relevant local catalogue evidence.",
+    "instructions": [
+      "Use only the supplied catalogue."
+    ],
+    "success_criteria": [
+      "Cite the selected paper identifier."
+    ],
+    "metadata": {
+      "fixture_version": "1"
+    }
+  },
+  "messages": [
+    {
+      "schema_version": "1",
+      "role": "user",
+      "content": "Find the relevant paper.",
+      "name": null,
+      "tool_call_id": null
+    }
+  ],
+  "steps": [
+    {
+      "schema_version": "1",
+      "step_number": 1,
+      "status": "completed",
+      "action": {
+        "schema_version": "1",
+        "action_type": "tool",
+        "tool_call": {
+          "schema_version": "1",
+          "call_id": "call-001",
+          "name": "catalogue_search",
+          "arguments": {
+            "query": "agent evaluation"
+          }
+        }
+      },
+      "model_response": {
+        "schema_version": "1",
+        "response_id": "response-001",
+        "provider": "deterministic-mock",
+        "model": "fixture-v1",
+        "message": null,
+        "tool_calls": [
+          {
+            "schema_version": "1",
+            "call_id": "call-001",
+            "name": "catalogue_search",
+            "arguments": {
+              "query": "agent evaluation"
+            }
+          }
+        ],
+        "structured_output": null,
+        "usage": {
+          "schema_version": "1",
+          "input_tokens": 10,
+          "output_tokens": 5,
+          "total_tokens": 15,
+          "model_calls": 1,
+          "tool_calls": 0
+        },
+        "finish_reason": "tool_calls"
+      },
+      "tool_result": {
+        "schema_version": "1",
+        "call_id": "call-001",
+        "name": "catalogue_search",
+        "status": "success",
+        "content": {
+          "paper_ids": [
+            "paper-001"
+          ]
+        },
+        "elapsed_ms": 1,
+        "error": null
+      },
+      "errors": [],
+      "cumulative_usage": {
+        "schema_version": "1",
+        "input_tokens": 10,
+        "output_tokens": 5,
+        "total_tokens": 15,
+        "model_calls": 1,
+        "tool_calls": 1
+      }
+    },
+    {
+      "schema_version": "1",
+      "step_number": 2,
+      "status": "completed",
+      "action": {
+        "schema_version": "1",
+        "action_type": "finish",
+        "answer": "Paper 001 describes trajectory-aware agent evaluation."
+      },
+      "model_response": {
+        "schema_version": "1",
+        "response_id": "response-002",
+        "provider": "deterministic-mock",
+        "model": "fixture-v1",
+        "message": {
+          "schema_version": "1",
+          "role": "assistant",
+          "content": "Paper 001 describes trajectory-aware agent evaluation.",
+          "name": null,
+          "tool_call_id": null
+        },
+        "tool_calls": [],
+        "structured_output": null,
+        "usage": {
+          "schema_version": "1",
+          "input_tokens": 12,
+          "output_tokens": 8,
+          "total_tokens": 20,
+          "model_calls": 1,
+          "tool_calls": 0
+        },
+        "finish_reason": "stop"
+      },
+      "tool_result": null,
+      "errors": [],
+      "cumulative_usage": {
+        "schema_version": "1",
+        "input_tokens": 22,
+        "output_tokens": 13,
+        "total_tokens": 35,
+        "model_calls": 2,
+        "tool_calls": 1
+      }
+    }
+  ],
+  "usage": {
+    "schema_version": "1",
+    "input_tokens": 22,
+    "output_tokens": 13,
+    "total_tokens": 35,
+    "model_calls": 2,
+    "tool_calls": 1
+  },
+  "errors": [],
+  "budget": {
+    "schema_version": "1",
+    "max_model_calls": 10,
+    "max_steps": 10,
+    "max_elapsed_seconds": 300.0,
+    "max_tokens": 100000,
+    "max_tool_calls": 20,
+    "max_repeated_actions": 2
+  },
+  "termination": {
+    "schema_version": "1",
+    "status": "success",
+    "reason": "completed",
+    "message": "The requested answer was produced.",
+    "step_number": 2
+  },
+  "final_answer": {
+    "schema_version": "1",
+    "task_id": "paper-summary-001",
+    "answer": "Paper 001 describes trajectory-aware agent evaluation.",
+    "evidence": [
+      {
+        "schema_version": "1",
+        "source_id": "paper-001",
+        "claim": "The paper evaluates agent trajectories.",
+        "excerpt": null
+      }
+    ],
+    "limitations": [
+      "The fixture contains a deliberately small local catalogue."
+    ]
+  }
+}

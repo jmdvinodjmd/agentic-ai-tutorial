@@ -50,7 +50,7 @@ make check
 
 ## Execution modes
 
-Deterministic offline mock execution is the project default. Recorded replay and optional live-provider execution will be added by later tickets. Live execution will never be required for core tutorials or tests.
+Deterministic offline mock execution is the project default. The shared model layer also supports strict replay of versioned canonical JSONL fixtures. Runnable agent tutorials will be added by later tickets, and optional live-provider execution remains deferred. Live execution will never be required for core tutorials or tests.
 
 ## Repository layout
 
@@ -65,4 +65,6 @@ Deterministic offline mock execution is the project default. Recorded replay and
 - `outputs/runs/`: generated run artefacts, ignored unless explicitly declared fixtures;
 - `docs/`: project specifications and documentation.
 
-The licence remains deliberately undecided.
+## Licence
+
+This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for the full terms.

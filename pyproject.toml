@@ -8,7 +8,8 @@ version = "0.1.0"
 description = "Teaching repository and reproducible artefact for A Practical Tutorial on Agentic AI"
 readme = "README.md"
 requires-python = ">=3.11,<3.12"
-dependencies = []
+license = "Apache-2.0"
+dependencies = ["pydantic>=2.11,<3"]
 
 [project.scripts]
 agentic-tutorial = "agentic_tutorial.cli:main"
@@ -38,4 +39,3 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 python_version = "3.11"
 strict = true
 files = ["src", "tests"]
-
