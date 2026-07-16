@@ -22,6 +22,14 @@ flowchart LR
 
 ## Reproduce
 
+Install the three optional framework integrations required by the matched comparison:
+
+```bash
+uv sync --dev --extra langgraph --extra crewai --extra openai-agents --frozen
+```
+
+Then run the comparison:
+
 ```bash
 uv run python evaluation/compare.py --repetitions 3 --output-root outputs/comparison
 ```
