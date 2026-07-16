@@ -1,0 +1,11 @@
+{
+  "execution_mode": "mock",
+  "provider": "deterministic-mock",
+  "variants": [
+    "standard",
+    "insufficient-evidence",
+    "clarification-required",
+    "tool-failure"
+  ],
+  "outputs": "outputs/runs"
+}

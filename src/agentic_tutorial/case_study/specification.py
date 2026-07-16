@@ -15,6 +15,7 @@ from agentic_tutorial.schemas import Budget, TaskSpec, ToolSideEffect
 from agentic_tutorial.tools import ToolRegistry
 
 FIXTURE_ROOT = Path(__file__).parents[3] / "case_study" / "fixtures" / "v1"
+CASE_STUDY_PLAN = "Plan: search, select, extract, synthesise, critique, then terminate."
 
 
 class FixtureModel(BaseModel):

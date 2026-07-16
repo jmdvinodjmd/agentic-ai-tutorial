@@ -56,6 +56,8 @@ The [execution patterns](patterns/README.md) demonstrate six common orchestratio
 
 The [research-assistant case study](case_study/README.md) provides a versioned common task and a complete framework-independent reference implementation.
 
+The matched [LangGraph implementation](case_study/langgraph/README.md) expresses the same task as explicit graph nodes and conditional edges while preserving the common contracts and evaluator.
+
 The [deterministic evaluation harness](evaluation/README.md) defines shared outcome, trajectory and resource metrics. The [safety policy](docs/safety.md) and [controlled failures](case_study/failures/README.md) demonstrate least-privilege execution and explicit failure boundaries.
 
 ## Execution modes

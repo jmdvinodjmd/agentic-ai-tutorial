@@ -12,3 +12,5 @@ The version 1 fixture centrally fixes prompts, tool permissions, budgets, stoppi
 All catalogue text is original synthetic material covered by the repository licence. Default execution is offline and requires no credentials. Generated traces, checkpoints, manifests and answers are written beneath `outputs/runs/`.
 
 The plain-Python command is documented in [plain_python/README.md](plain_python/README.md).
+
+The matched LangGraph command is documented in [langgraph/README.md](langgraph/README.md).
