@@ -1,0 +1,3 @@
+{"trace_schema_version":"1","run_id":"pattern-react-tool-use","sequence":1,"timestamp":"2026-07-16T19:57:57.981733Z","event_type":"run_start","payload":{"pattern":"react-tool-use"}}
+{"trace_schema_version":"1","run_id":"pattern-react-tool-use","sequence":2,"timestamp":"2026-07-16T19:57:57.982419Z","event_type":"decision","payload":{"result":{"pattern":"ReAct-style tool use","trajectory":["reason: search is needed","act: catalogue_search","observe: paper-001"],"success":true,"limitation":"repeated actions require a circuit breaker"}}}
+{"trace_schema_version":"1","run_id":"pattern-react-tool-use","sequence":3,"timestamp":"2026-07-16T19:57:57.987568Z","event_type":"termination","payload":{"reason":"completed"}}

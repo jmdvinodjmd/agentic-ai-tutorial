@@ -21,18 +21,27 @@ PATTERN_NAMES = (
 
 
 def run_pattern(name: str) -> dict[str, object]:
+    return asyncio.run(run_pattern_async(name))
+
+
+async def run_pattern_async(name: str) -> dict[str, object]:
+    """Run one pattern inside an existing event loop."""
     runners = {
         "prompt-chaining": _prompt_chaining,
-        "routing-parallelisation": _routing_parallelisation,
-        "react-tool-use": _react,
         "planner-executor": _planner_executor,
         "critic-reviser": _critic_reviser,
-        "orchestrator-worker": _orchestrator_worker,
     }
-    try:
-        result = runners[name]()
-    except KeyError as error:
-        raise ValueError(f"unknown pattern: {name}") from error
+    if name == "routing-parallelisation":
+        result = await _routing_parallelisation()
+    elif name == "react-tool-use":
+        result = await _react()
+    elif name == "orchestrator-worker":
+        result = await _orchestrator_worker()
+    else:
+        try:
+            result = runners[name]()
+        except KeyError as error:
+            raise ValueError(f"unknown pattern: {name}") from error
     trace_path = Path("outputs/runs") / f"pattern-{name}" / "trace.jsonl"
     trace_path.unlink(missing_ok=True)
     trace = TraceWriter(trace_path, run_id=f"pattern-{name}")
@@ -53,7 +62,7 @@ def _prompt_chaining() -> dict[str, object]:
     }
 
 
-def _routing_parallelisation() -> dict[str, object]:
+async def _routing_parallelisation() -> dict[str, object]:
     async def worker(label: str) -> str:
         await asyncio.sleep(0)
         return f"{label}:complete"
@@ -65,18 +74,18 @@ def _routing_parallelisation() -> dict[str, object]:
 
     return {
         "pattern": "routing and parallelisation",
-        "ordered_results": asyncio.run(run()),
+        "ordered_results": await run(),
         "limitation": "incorrect routing selects the wrong workers",
     }
 
 
-def _react() -> dict[str, object]:
+async def _react() -> dict[str, object]:
     call = ToolCall(
         call_id="react-search",
         name="catalogue_search",
         arguments={"query": "agent evaluation"},
     )
-    result = asyncio.run(ToolExecutor(build_tutorial_registry()).execute(call))
+    result = await ToolExecutor(build_tutorial_registry()).execute(call)
     return {
         "pattern": "ReAct-style tool use",
         "trajectory": ["reason: search is needed", "act: catalogue_search", "observe: paper-001"],
@@ -117,24 +126,20 @@ def _critic_reviser() -> dict[str, object]:
     }
 
 
-def _orchestrator_worker() -> dict[str, object]:
+async def _orchestrator_worker() -> dict[str, object]:
     registry = build_tutorial_registry()
     executor = ToolExecutor(registry)
-    research = asyncio.run(
-        executor.execute(
-            ToolCall(
-                call_id="research",
-                name="catalogue_search",
-                arguments={"query": "agent evaluation"},
-            ),
-            allowed_tools={"catalogue_search"},
-        )
+    research = await executor.execute(
+        ToolCall(
+            call_id="research",
+            name="catalogue_search",
+            arguments={"query": "agent evaluation"},
+        ),
+        allowed_tools={"catalogue_search"},
     )
-    analysis = asyncio.run(
-        executor.execute(
-            ToolCall(call_id="analysis", name="calculator_add", arguments={"left": 1, "right": 1}),
-            allowed_tools={"calculator_add"},
-        )
+    analysis = await executor.execute(
+        ToolCall(call_id="analysis", name="calculator_add", arguments={"left": 1, "right": 1}),
+        allowed_tools={"calculator_add"},
     )
     return {
         "pattern": "orchestrator-worker",

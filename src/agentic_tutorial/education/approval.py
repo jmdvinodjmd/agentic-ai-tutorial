@@ -212,10 +212,11 @@ class ApprovalWorkflow:
         return updated
 
 
-def run_approval_cli(decision: str | None, revised_title: str) -> int:
-    """Run either interactively or with a deterministic command-line decision."""
-    selected = decision or input("Decision [approve/reject/revise/request_information]: ").strip()
-    decision_type = HumanDecisionType(selected)
+async def run_approval_demo(
+    decision: str, revised_title: str
+) -> tuple[AgentState, list[str]]:
+    """Run the deterministic approval demonstration inside an existing event loop."""
+    decision_type = HumanDecisionType(decision)
     run_id = "approval-demo"
     directory = Path("outputs/runs") / run_id
     trace_path = directory / "trace.jsonl"
@@ -227,19 +228,24 @@ def run_approval_cli(decision: str | None, revised_title: str) -> int:
         TraceWriter(trace_path, run_id=run_id),
     )
 
-    async def run() -> AgentState:
-        await workflow.propose(run_id=run_id, title="Initial local submission")
-        return await workflow.decide(
-            run_id,
-            decision_type,
-            revised_title=revised_title if decision_type is HumanDecisionType.REVISE else None,
-        )
+    await workflow.propose(run_id=run_id, title="Initial local submission")
+    state = await workflow.decide(
+        run_id,
+        decision_type,
+        revised_title=revised_title if decision_type is HumanDecisionType.REVISE else None,
+    )
+    return state, executed
 
-    state = asyncio.run(run())
+
+def run_approval_cli(decision: str | None, revised_title: str) -> int:
+    """Run either interactively or with a deterministic command-line decision."""
+    selected = decision or input("Decision [approve/reject/revise/request_information]: ").strip()
+
+    state, executed = asyncio.run(run_approval_demo(selected, revised_title))
     print(
         json.dumps(
             {
-                "decision": decision_type.value,
+                "decision": selected,
                 "executed": executed,
                 "termination": state.termination.status if state.termination else None,
             },

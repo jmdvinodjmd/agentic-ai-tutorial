@@ -6,7 +6,11 @@ import asyncio
 from pathlib import Path
 
 from agentic_tutorial.checkpoints import JsonCheckpointStore
-from agentic_tutorial.education.approval import ApprovalWorkflow, build_approval_executor
+from agentic_tutorial.education.approval import (
+    ApprovalWorkflow,
+    build_approval_executor,
+    run_approval_demo,
+)
 from agentic_tutorial.schemas import HumanDecisionType, TerminationStatus, ToolCall
 from agentic_tutorial.tools import ApprovalToken
 from agentic_tutorial.tracing import TraceEventType, TraceReader, TraceWriter
@@ -50,6 +54,16 @@ def test_reject_never_executes(tmp_path: Path) -> None:
     assert state.steps[0].tool_result is not None
     error = state.steps[0].tool_result.error
     assert error is not None and error.code == "human_rejected"
+
+
+def test_approval_demo_runs_inside_an_event_loop() -> None:
+    async def run() -> None:
+        state, executed = await run_approval_demo("reject", "Unused revised title")
+        assert executed == []
+        assert state.termination is not None
+        assert state.termination.status is TerminationStatus.FAILURE
+
+    asyncio.run(run())
 
 
 def test_revise_executes_only_revised_action(tmp_path: Path) -> None:

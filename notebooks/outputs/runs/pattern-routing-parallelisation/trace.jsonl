@@ -1,0 +1,3 @@
+{"trace_schema_version":"1","run_id":"pattern-routing-parallelisation","sequence":1,"timestamp":"2026-07-16T19:57:57.966430Z","event_type":"run_start","payload":{"pattern":"routing-parallelisation"}}
+{"trace_schema_version":"1","run_id":"pattern-routing-parallelisation","sequence":2,"timestamp":"2026-07-16T19:57:57.967046Z","event_type":"decision","payload":{"result":{"pattern":"routing and parallelisation","ordered_results":["evidence","claims:complete","metadata:complete"],"limitation":"incorrect routing selects the wrong workers"}}}
+{"trace_schema_version":"1","run_id":"pattern-routing-parallelisation","sequence":3,"timestamp":"2026-07-16T19:57:57.972746Z","event_type":"termination","payload":{"reason":"completed"}}

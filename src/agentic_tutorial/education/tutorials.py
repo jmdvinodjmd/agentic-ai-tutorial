@@ -35,22 +35,29 @@ TUTORIAL_NAMES = (
 
 def run_tutorial(name: str) -> dict[str, object]:
     """Run one named deterministic tutorial."""
+    return asyncio.run(run_tutorial_async(name))
+
+
+async def run_tutorial_async(name: str) -> dict[str, object]:
+    """Run one named deterministic tutorial inside an existing event loop."""
     runners = {
-        "basic-model": _basic_model,
-        "tool-use": _tool_use,
         "explicit-state": _explicit_state,
         "planning": _planning,
         "retained-context": _retained_context,
         "critique-validation": _critique_validation,
         "bounded-tracing": _bounded_tracing,
     }
+    if name == "basic-model":
+        return await _basic_model()
+    if name == "tool-use":
+        return await _tool_use()
     try:
         return runners[name]()
     except KeyError as error:
         raise ValueError(f"unknown tutorial: {name}") from error
 
 
-def _basic_model() -> dict[str, object]:
+async def _basic_model() -> dict[str, object]:
     response = ModelResponse(
         response_id="basic-1",
         provider="deterministic-mock",
@@ -71,21 +78,19 @@ def _basic_model() -> dict[str, object]:
             responses=(response,),
         )
     )
-    result = asyncio.run(client.generate([Message(role=MessageRole.USER, content="Find evidence")]))
+    result = await client.generate([Message(role=MessageRole.USER, content="Find evidence")])
     return {
         "concept": "model invocation",
         "answer": result.message.content if result.message else "",
     }
 
 
-def _tool_use() -> dict[str, object]:
-    result = asyncio.run(
-        ToolExecutor(build_tutorial_registry()).execute(
-            ToolCall(
-                call_id="tutorial-call",
-                name="catalogue_search",
-                arguments={"query": "agent evaluation"},
-            )
+async def _tool_use() -> dict[str, object]:
+    result = await ToolExecutor(build_tutorial_registry()).execute(
+        ToolCall(
+            call_id="tutorial-call",
+            name="catalogue_search",
+            arguments={"query": "agent evaluation"},
         )
     )
     return {"concept": "tool use", "result": result.content}

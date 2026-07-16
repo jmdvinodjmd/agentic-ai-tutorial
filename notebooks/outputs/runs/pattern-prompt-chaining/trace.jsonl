@@ -1,0 +1,3 @@
+{"trace_schema_version":"1","run_id":"pattern-prompt-chaining","sequence":1,"timestamp":"2026-07-16T19:57:57.951744Z","event_type":"run_start","payload":{"pattern":"prompt-chaining"}}
+{"trace_schema_version":"1","run_id":"pattern-prompt-chaining","sequence":2,"timestamp":"2026-07-16T19:57:57.952376Z","event_type":"decision","payload":{"result":{"pattern":"prompt chaining","stages":["paper-001","paper-001","Evidence source: paper-001"],"limitation":"errors propagate"}}}
+{"trace_schema_version":"1","run_id":"pattern-prompt-chaining","sequence":3,"timestamp":"2026-07-16T19:57:57.958237Z","event_type":"termination","payload":{"reason":"completed"}}

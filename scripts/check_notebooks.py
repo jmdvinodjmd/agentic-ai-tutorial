@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import argparse
+import ast
+import asyncio
+import inspect
 import json
 import os
 from pathlib import Path
@@ -61,7 +64,15 @@ def execute(path: Path) -> None:
             if cell.get("cell_type") != "code":
                 continue
             source = "".join(cell.get("source", []))
-            exec(compile(source, f"{path.name}:cell-{index}", "exec"), namespace)
+            code = compile(
+                source,
+                f"{path.name}:cell-{index}",
+                "exec",
+                flags=ast.PyCF_ALLOW_TOP_LEVEL_AWAIT,
+            )
+            result = eval(code, namespace)
+            if inspect.isawaitable(result):
+                asyncio.run(result)
     finally:
         if old_mode is None:
             os.environ.pop("AGENTIC_TUTORIAL_MODE", None)
