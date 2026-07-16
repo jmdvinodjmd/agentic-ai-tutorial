@@ -39,6 +39,14 @@ class ApprovalToken(BaseModel):
             arguments_hash=_arguments_hash(call),
         )
 
+    def matches(self, call: ToolCall) -> bool:
+        """Return whether this authority is scoped to exactly ``call``."""
+        return (
+            self.tool_name == call.name
+            and self.call_id == call.call_id
+            and self.arguments_hash == _arguments_hash(call)
+        )
+
 
 class ToolExecutor:
     """Execute only registered, allowed and validated tool calls."""
@@ -70,10 +78,7 @@ class ToolExecutor:
                 status=ToolResultStatus.DENIED,
             )
         if registered.definition.side_effect is ToolSideEffect.SIDE_EFFECTING and (
-            approval is None
-            or approval.tool_name != call.name
-            or approval.call_id != call.call_id
-            or approval.arguments_hash != _arguments_hash(call)
+            approval is None or not approval.matches(call)
         ):
             return self._failure(
                 call,

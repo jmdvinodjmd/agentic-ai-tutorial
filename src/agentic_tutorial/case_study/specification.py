@@ -10,6 +10,7 @@ from typing import Literal, cast
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from agentic_tutorial.safety import SafetyPolicy
 from agentic_tutorial.schemas import Budget, TaskSpec, ToolSideEffect
 from agentic_tutorial.tools import ToolRegistry
 
@@ -46,14 +47,6 @@ class CatalogueEntry(FixtureModel):
     evidence_claim: str | None = None
     valid: bool = True
     conflicts_with: tuple[str, ...] = ()
-
-
-class SafetyPolicy(FixtureModel):
-    policy_version: Literal["1"] = "1"
-    allowed_tools: tuple[str, ...]
-    retrieved_content_is_untrusted: bool
-    side_effects_permitted: bool
-    require_source_provenance: bool
 
 
 class EvaluationAnnotation(FixtureModel):

@@ -22,6 +22,7 @@ from agentic_tutorial.checkpoints import JsonCheckpointStore
 from agentic_tutorial.execution import PlainPythonAgent
 from agentic_tutorial.models.providers import DeterministicMockClient
 from agentic_tutorial.models.providers.fixtures import FixtureProvenance, ScriptedScenarioFixture
+from agentic_tutorial.safety import PolicyToolExecutor, SafetyEngine
 from agentic_tutorial.schemas import (
     AgentState,
     Budget,
@@ -38,7 +39,6 @@ from agentic_tutorial.schemas import (
     ToolCall,
     Usage,
 )
-from agentic_tutorial.tools import ToolExecutor
 from agentic_tutorial.tracing import (
     TraceEventType,
     TraceWriter,
@@ -149,8 +149,9 @@ class PlainPythonCaseStudy:
                 )
             agent = PlainPythonAgent(
                 self._model(variant_name, offset=offset),
-                ToolExecutor(
-                    build_case_study_registry(fail_searches=variant.inject_search_failures)
+                PolicyToolExecutor(
+                    build_case_study_registry(fail_searches=variant.inject_search_failures),
+                    SafetyEngine(self.definition.safety, trace_writer=trace),
                 ),
                 budget=configured_budget,
                 allowed_tools=self.definition.safety.allowed_tools,
@@ -299,6 +300,7 @@ class PlainPythonCaseStudy:
                 "safety_policy_version": self.definition.safety.policy_version,
             },
             task_specification_hash=specification_hash,
+            safety_policy_version=self.definition.safety.policy_version,
             created_at=datetime(2026, 1, 1, tzinfo=UTC),
         )
         write_manifest(directory / "manifest.json", manifest)

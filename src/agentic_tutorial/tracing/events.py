@@ -20,6 +20,7 @@ class TraceEventType(StrEnum):
     BUDGET = "budget"
     CHECKPOINT = "checkpoint"
     HUMAN_DECISION = "human_decision"
+    POLICY_DECISION = "policy_decision"
     ERROR = "error"
     TERMINATION = "termination"
 

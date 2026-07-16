@@ -31,6 +31,7 @@ class RunManifest(BaseModel):
     model: str
     configuration_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
     task_specification_hash: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    safety_policy_version: str | None = None
     environment: dict[str, JsonValue]
 
 
@@ -42,6 +43,7 @@ def build_run_manifest(
     model: str,
     configuration: BaseModel | dict[str, JsonValue],
     task_specification_hash: str | None = None,
+    safety_policy_version: str | None = None,
     created_at: datetime | None = None,
     dependencies: tuple[str, ...] = ("agentic-ai-tutorial", "pydantic"),
 ) -> RunManifest:
@@ -68,6 +70,7 @@ def build_run_manifest(
         model=model,
         configuration_hash=hashlib.sha256(encoded).hexdigest(),
         task_specification_hash=task_specification_hash,
+        safety_policy_version=safety_policy_version,
         environment={
             "implementation": platform.python_implementation(),
             "operating_system": platform.system(),

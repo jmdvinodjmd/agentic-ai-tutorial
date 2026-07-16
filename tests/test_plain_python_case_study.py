@@ -43,6 +43,7 @@ def test_standard_success_has_valid_provenance_and_outputs(tmp_path: Path) -> No
         (tmp_path / "outputs" / "standard" / "manifest.json").read_text(encoding="utf-8")
     )
     assert manifest.task_specification_hash == case_study_hash()
+    assert manifest.safety_policy_version == load_definition().safety.policy_version
     event_types = {
         event.event_type
         for event in TraceReader(tmp_path / "outputs" / "standard" / "trace.jsonl").read()

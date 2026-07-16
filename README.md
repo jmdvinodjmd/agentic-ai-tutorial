@@ -56,6 +56,8 @@ The [execution patterns](patterns/README.md) demonstrate six common orchestratio
 
 The [research-assistant case study](case_study/README.md) provides a versioned common task and a complete framework-independent reference implementation.
 
+The [deterministic evaluation harness](evaluation/README.md) defines shared outcome, trajectory and resource metrics. The [safety policy](docs/safety.md) and [controlled failures](case_study/failures/README.md) demonstrate least-privilege execution and explicit failure boundaries.
+
 ## Execution modes
 
 Deterministic offline mock execution is the project default. The shared model layer also supports strict replay of versioned canonical JSONL fixtures. Live execution is never required for core tutorials or tests.
