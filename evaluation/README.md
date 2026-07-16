@@ -21,3 +21,5 @@ The common evaluator scores canonical state and traces rather than relying on an
 Metrics are deterministic and intentionally narrow. Semantic answer quality beyond the explicit annotations is not inferred, and prompt-injection safety cannot be established from final-answer scoring alone.
 
 Repeated deterministic runs must match on outcomes and trajectory metrics. Wall-clock latency is retained as an observed measurement and is excluded from byte-equivalence claims because operating-system scheduling varies.
+
+The four-way [matched framework comparison](comparison/README.md) applies these unchanged metrics to the standard task and adds explicitly observational implementation measurements.

@@ -49,4 +49,4 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 [tool.mypy]
 python_version = "3.11"
 strict = true
-files = ["src", "tests", "frameworks", "case_study/langgraph", "case_study/crewai", "case_study/openai_agents"]
+files = ["src", "tests", "frameworks", "evaluation", "scripts", "case_study/langgraph", "case_study/crewai", "case_study/openai_agents"]

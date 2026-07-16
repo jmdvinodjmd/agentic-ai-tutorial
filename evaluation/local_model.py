@@ -13,10 +13,10 @@ from pydantic import BaseModel, ConfigDict
 
 from agentic_tutorial.case_study import (
     CaseStudyVariant,
-    PlainPythonCaseStudy,
     case_study_hash,
     load_definition,
 )
+from agentic_tutorial.case_study.plain_python import PlainPythonCaseStudy
 from agentic_tutorial.evaluation import ExperimentConfig, ExperimentRunner
 from agentic_tutorial.models import ModelConfig, create_model_client
 from agentic_tutorial.schemas import AgentState, Message, MessageRole

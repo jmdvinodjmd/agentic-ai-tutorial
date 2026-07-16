@@ -1,9 +1,34 @@
 # Basic model invocation
 
-Introduces one canonical offline model request and response. Unlike the repository smoke check, this invokes the shared model interface; tools and state are excluded.
+## Purpose
+
+Send one canonical request through the shared deterministic model interface.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  Message --> ModelClient --> ModelResponse
+```
+
+## Run
 
 ```bash
 uv run python tutorials/basic_model/run.py
 ```
 
-Expected: `{"answer": "Paper paper-001 is relevant.", "concept": "model invocation"}`.
+## Expected output
+
+`{"answer": "Paper paper-001 is relevant.", "concept": "model invocation"}`
+
+## Concept introduced
+
+The model client separates canonical messages and responses from any provider SDK. This is a system component, not an agent loop.
+
+## Limitations
+
+Tools, explicit state and iteration are deliberately excluded.
+
+## Next step
+
+Add validated environmental interaction in [tool use](../tool_use/README.md).

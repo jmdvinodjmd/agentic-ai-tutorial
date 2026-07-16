@@ -16,3 +16,7 @@ The plain-Python command is documented in [plain_python/README.md](plain_python/
 The matched LangGraph command is documented in [langgraph/README.md](langgraph/README.md).
 
 The matched CrewAI command is documented in [crewai/README.md](crewai/README.md).
+
+The matched OpenAI Agents SDK command is documented in [openai_agents/README.md](openai_agents/README.md).
+
+These are alternative **framework abstractions** over one task, not separate applications. They are evaluated through one reproducible [matched experiment](../evaluation/comparison/README.md).
