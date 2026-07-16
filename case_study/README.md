@@ -14,3 +14,5 @@ All catalogue text is original synthetic material covered by the repository lice
 The plain-Python command is documented in [plain_python/README.md](plain_python/README.md).
 
 The matched LangGraph command is documented in [langgraph/README.md](langgraph/README.md).
+
+The matched CrewAI command is documented in [crewai/README.md](crewai/README.md).

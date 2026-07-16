@@ -58,6 +58,8 @@ The [research-assistant case study](case_study/README.md) provides a versioned c
 
 The matched [LangGraph implementation](case_study/langgraph/README.md) expresses the same task as explicit graph nodes and conditional edges while preserving the common contracts and evaluator.
 
+The matched [CrewAI implementation](case_study/crewai/README.md) demonstrates functionally separated specialist assignments using a bounded sequential Flow.
+
 The [deterministic evaluation harness](evaluation/README.md) defines shared outcome, trajectory and resource metrics. The [safety policy](docs/safety.md) and [controlled failures](case_study/failures/README.md) demonstrate least-privilege execution and explicit failure boundaries.
 
 ## Execution modes
