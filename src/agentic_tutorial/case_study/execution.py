@@ -27,6 +27,7 @@ from agentic_tutorial.schemas import (
     TerminationStatus,
     ToolAction,
     ToolDefinition,
+    ToolResult,
     ToolResultStatus,
 )
 from agentic_tutorial.tools import ToolExecutor
@@ -151,7 +152,7 @@ class CaseStudyExecution:
                     *state.messages,
                     Message(
                         role=MessageRole.TOOL,
-                        content=json.dumps(result.model_dump(mode="json"), sort_keys=True),
+                        content=json.dumps(_model_visible_tool_result(result), sort_keys=True),
                         name=result.name,
                         tool_call_id=result.call_id,
                     ),
@@ -381,3 +382,10 @@ class CaseStudyExecution:
                 },
             },
         )
+
+
+def _model_visible_tool_result(result: ToolResult) -> dict[str, object]:
+    """Remove runtime timing noise from model context and strict replay keys."""
+    payload: dict[str, object] = result.model_dump(mode="json")
+    payload["elapsed_ms"] = 0
+    return payload
