@@ -12,6 +12,7 @@
   "provider": "deterministic-mock",
   "model": "offline-fixture-v1",
   "configuration_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "task_specification_hash": null,
   "environment": {
     "implementation": "CPython",
     "operating_system": "fixture",

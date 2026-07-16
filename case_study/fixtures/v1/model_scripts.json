@@ -1,0 +1,22 @@
+{
+  "fixture_version": "1",
+  "standard": [
+    {"action_type": "tool", "call_id": "standard-search", "name": "search_catalogue", "arguments": {"query": "agent evaluation trajectories offline reproducibility"}},
+    {"action_type": "tool", "call_id": "standard-extract", "name": "extract_evidence", "arguments": {"source_ids": ["source-001", "source-002"]}},
+    {"action_type": "tool", "call_id": "standard-critique", "name": "critique_draft", "arguments": {"draft": "source-001 supports trajectory checks and source-002 supports reproducible offline comparisons.", "source_ids": ["source-001", "source-002"]}},
+    {"action_type": "finish", "answer": "Trajectory checks expose invalid tool actions, while fixed offline fixtures and canonical traces make comparisons reproducible."}
+  ],
+  "insufficient-evidence": [
+    {"action_type": "tool", "call_id": "insufficient-search", "name": "search_catalogue", "arguments": {"query": "agent evaluation energy reduction"}},
+    {"action_type": "tool", "call_id": "insufficient-critique", "name": "critique_draft", "arguments": {"draft": "The evidence is insufficient.", "source_ids": []}},
+    {"action_type": "finish", "answer": "The local catalogue contains insufficient evidence about energy reduction."}
+  ],
+  "clarification-required": [],
+  "tool-failure": [
+    {"action_type": "tool", "call_id": "failure-search-1", "name": "search_catalogue", "arguments": {"query": "offline reproducibility research agents"}},
+    {"action_type": "tool", "call_id": "failure-search-2", "name": "search_catalogue", "arguments": {"query": "offline reproducibility research agents"}},
+    {"action_type": "tool", "call_id": "failure-extract", "name": "extract_evidence", "arguments": {"source_ids": ["source-002"]}},
+    {"action_type": "tool", "call_id": "failure-critique", "name": "critique_draft", "arguments": {"draft": "source-002 supports reproducible offline evaluation.", "source_ids": ["source-002"]}},
+    {"action_type": "finish", "answer": "Fixed offline fixtures and canonical traces support reproducible research-agent evaluation."}
+  ]
+}

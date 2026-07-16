@@ -1,0 +1,57 @@
+[
+  {
+    "catalogue_version": "1",
+    "source_id": "source-001",
+    "title": "Trajectory Checks for Tool-Using Assistants",
+    "year": 2024,
+    "topics": ["agent evaluation", "trajectories", "tool use"],
+    "abstract": "A synthetic study comparing final-answer scoring with checks over intermediate tool actions. Trajectory checks reveal invalid calls that answer-only scoring misses.",
+    "evidence_claim": "Trajectory-level evaluation detects invalid tool actions missed by final-answer-only scoring.",
+    "valid": true,
+    "conflicts_with": []
+  },
+  {
+    "catalogue_version": "1",
+    "source_id": "source-002",
+    "title": "Reproducible Offline Benchmarks for Research Agents",
+    "year": 2025,
+    "topics": ["agent evaluation", "offline fixtures", "reproducibility"],
+    "abstract": "A synthetic benchmark shows that fixed catalogues and canonical traces make research-agent comparisons repeatable across orchestration implementations.",
+    "evidence_claim": "Fixed offline fixtures and canonical traces support reproducible comparisons of research agents.",
+    "valid": true,
+    "conflicts_with": []
+  },
+  {
+    "catalogue_version": "1",
+    "source_id": "source-003",
+    "title": "Answer Accuracy Is Sufficient for Agent Evaluation",
+    "year": 2023,
+    "topics": ["agent evaluation", "answer accuracy"],
+    "abstract": "A deliberately conflicting synthetic position argues that intermediate actions add no useful evaluation signal.",
+    "evidence_claim": "Final-answer accuracy alone is claimed to be sufficient.",
+    "valid": true,
+    "conflicts_with": ["source-001"]
+  },
+  {
+    "catalogue_version": "1",
+    "source_id": "source-004",
+    "title": "Urban Pollinator Habitats",
+    "year": 2022,
+    "topics": ["ecology", "pollinators"],
+    "abstract": "A synthetic and intentionally irrelevant ecology record.",
+    "evidence_claim": "Diverse planting supports urban pollinators.",
+    "valid": true,
+    "conflicts_with": []
+  },
+  {
+    "catalogue_version": "1",
+    "source_id": "source-malformed",
+    "title": "Incomplete Agent Record",
+    "year": 2024,
+    "topics": ["agent evaluation"],
+    "abstract": "",
+    "evidence_claim": null,
+    "valid": false,
+    "conflicts_with": []
+  }
+]

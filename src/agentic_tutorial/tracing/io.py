@@ -124,6 +124,12 @@ def _normalise_durations(value: JsonValue, key: str = "") -> JsonValue:
         return {name: _normalise_durations(item, name) for name, item in value.items()}
     if isinstance(value, list):
         return [_normalise_durations(item, key) for item in value]
+    if isinstance(value, str) and value.startswith(("{", "[")):
+        try:
+            nested: JsonValue = TypeAdapter(JsonValue).validate_python(json.loads(value))
+        except (json.JSONDecodeError, ValidationError):
+            return value
+        return json.dumps(_normalise_durations(nested), sort_keys=True, separators=(",", ":"))
     if key == "run_id":
         return "<run_id>"
     if key == "seconds" or key.endswith(
