@@ -1,0 +1,37 @@
+.DS_Store
+
+# Python caches and build artefacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+
+# Local environments and tooling
+.venv/
+.python-version
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Generated run artefacts
+outputs/*
+!outputs/.gitkeep
+!outputs/runs/
+outputs/runs/*
+!outputs/runs/.gitkeep
+
+# Editor state
+.idea/
+.vscode/
+*.swp
+
