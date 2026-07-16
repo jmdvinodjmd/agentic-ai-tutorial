@@ -102,6 +102,15 @@ class TerminationReason(StrEnum):
     HUMAN_INTERRUPTION = "human_interruption"
 
 
+class HumanDecisionType(StrEnum):
+    """Auditable outcomes at a human approval boundary."""
+
+    APPROVE = "approve"
+    REJECT = "reject"
+    REVISE = "revise"
+    REQUEST_INFORMATION = "request_information"
+
+
 class TaskSpec(CanonicalModel):
     """A stable task definition independent of models and frameworks."""
 
@@ -154,6 +163,23 @@ class AgentError(CanonicalModel):
     code: str = Field(min_length=1)
     message: str = Field(min_length=1)
     source: str | None = None
+
+
+class HumanDecision(CanonicalModel):
+    """A decision tied to the exact proposed canonical tool call."""
+
+    decision: HumanDecisionType
+    proposed_call: ToolCall
+    revised_call: ToolCall | None = None
+    rationale: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def validate_revision(self) -> HumanDecision:
+        if self.decision is HumanDecisionType.REVISE and self.revised_call is None:
+            raise ValueError("revise decisions require revised_call")
+        if self.decision is not HumanDecisionType.REVISE and self.revised_call is not None:
+            raise ValueError("revised_call is valid only for revise decisions")
+        return self
 
 
 class ToolResult(CanonicalModel):
@@ -307,7 +333,11 @@ class AgentStep(CanonicalModel):
     def validate_action_result(self) -> AgentStep:
         if self.action is None and self.status is not StepStatus.FAILED:
             raise ValueError("only failed steps may omit an action")
-        if isinstance(self.action, ToolAction) and self.tool_result is None:
+        if (
+            isinstance(self.action, ToolAction)
+            and self.tool_result is None
+            and self.status is not StepStatus.INTERRUPTED
+        ):
             raise ValueError("tool actions require a tool result")
         if isinstance(self.action, FinishAction) and self.tool_result is not None:
             raise ValueError("finish actions cannot contain a tool result")
@@ -326,6 +356,8 @@ class AgentState(CanonicalModel):
     budget: Budget = Field(default_factory=Budget)
     termination: Termination | None = None
     final_answer: FinalAnswer | None = None
+    pending_action: ToolCall | None = None
+    human_decisions: tuple[HumanDecision, ...] = ()
 
     @model_validator(mode="after")
     def validate_trajectory(self) -> AgentState:

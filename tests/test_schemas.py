@@ -1,4 +1,4 @@
-"""Tests for T01 canonical schemas and state invariants."""
+"""Tests for canonical schemas and state invariants."""
 
 from __future__ import annotations
 

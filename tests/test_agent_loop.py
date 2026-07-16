@@ -1,4 +1,4 @@
-"""Tests for T06 minimal framework-free agent execution."""
+"""Tests for the minimal framework-free agent execution loop."""
 
 from __future__ import annotations
 

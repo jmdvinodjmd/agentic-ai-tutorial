@@ -160,6 +160,8 @@
     "failures": 0
   },
   "errors": [],
+  "pending_action": null,
+  "human_decisions": [],
   "budget": {
     "schema_version": "1",
     "max_model_calls": 10,

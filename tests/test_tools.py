@@ -1,4 +1,4 @@
-"""Tests for T05 shared tool registration and safe execution."""
+"""Tests for shared tool registration and safe execution."""
 
 from __future__ import annotations
 
@@ -120,9 +120,7 @@ def test_side_effect_requires_matching_approval() -> None:
     call = ToolCall(call_id="call-1", name="consequential", arguments={"value": "approved"})
     executor = ToolExecutor(registry)
     denied = asyncio.run(executor.execute(call))
-    approved = asyncio.run(
-        executor.execute(call, approval=ApprovalToken(tool_name=call.name, call_id=call.call_id))
-    )
+    approved = asyncio.run(executor.execute(call, approval=ApprovalToken.for_call(call)))
     assert denied.status is ToolResultStatus.DENIED
     assert approved.content == "approved"
 

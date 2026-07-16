@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import inspect
+import json
 from collections.abc import Collection
 from time import monotonic
 
@@ -26,6 +28,16 @@ class ApprovalToken(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
     tool_name: str = Field(min_length=1)
     call_id: str = Field(min_length=1)
+    arguments_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+    @classmethod
+    def for_call(cls, call: ToolCall) -> ApprovalToken:
+        """Create authority scoped to the exact name, identifier and arguments."""
+        return cls(
+            tool_name=call.name,
+            call_id=call.call_id,
+            arguments_hash=_arguments_hash(call),
+        )
 
 
 class ToolExecutor:
@@ -58,7 +70,10 @@ class ToolExecutor:
                 status=ToolResultStatus.DENIED,
             )
         if registered.definition.side_effect is ToolSideEffect.SIDE_EFFECTING and (
-            approval is None or approval.tool_name != call.name or approval.call_id != call.call_id
+            approval is None
+            or approval.tool_name != call.name
+            or approval.call_id != call.call_id
+            or approval.arguments_hash != _arguments_hash(call)
         ):
             return self._failure(
                 call,
@@ -139,3 +154,8 @@ def _elapsed_ms(started: float) -> int:
 def _validation_message(error: ValidationError) -> str:
     locations = [".".join(str(part) for part in item["loc"]) for item in error.errors()]
     return "invalid arguments: " + ", ".join(locations)
+
+
+def _arguments_hash(call: ToolCall) -> str:
+    encoded = json.dumps(call.arguments, sort_keys=True, separators=(",", ":")).encode()
+    return hashlib.sha256(encoded).hexdigest()

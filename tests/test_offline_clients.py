@@ -1,4 +1,4 @@
-"""Tests for T03 deterministic mock and strict replay clients."""
+"""Tests for deterministic mock and strict replay clients."""
 
 from __future__ import annotations
 

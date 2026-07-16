@@ -2,7 +2,7 @@
 
 Teaching repository and reproducible research artefact for *A Practical Tutorial on Agentic AI*.
 
-The repository is currently at foundation stage. It provides an installable Python package and a deterministic offline smoke command, but no agent, provider, tool or framework implementation yet.
+The repository provides a framework-independent execution foundation, deterministic offline examples and compact execution-pattern demonstrations.
 
 ## Requirements
 
@@ -46,11 +46,17 @@ make smoke
 make check
 ```
 
-`make check` runs formatting verification, linting, static type checking, tests and the offline smoke check. The commands are CI-ready; the full framework matrix and release automation are deferred to T24.
+`make check` runs formatting verification, linting, static type checking, tests and the offline smoke check.
+
+## Runnable examples
+
+The [progressive tutorials](tutorials/README.md) introduce model calls, tools, state, planning, retained context, critique, bounded execution and human approval one concept at a time.
+
+The [execution patterns](patterns/README.md) demonstrate six common orchestration flows. All examples run offline with deterministic local fixtures.
 
 ## Execution modes
 
-Deterministic offline mock execution is the project default. The shared model layer also supports strict replay of versioned canonical JSONL fixtures. Runnable agent tutorials will be added by later tickets, and optional live-provider execution remains deferred. Live execution will never be required for core tutorials or tests.
+Deterministic offline mock execution is the project default. The shared model layer also supports strict replay of versioned canonical JSONL fixtures. Live execution is never required for core tutorials or tests.
 
 ## Repository layout
 

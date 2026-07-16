@@ -1,4 +1,4 @@
-"""Tests for T07 checkpoint persistence and resumption."""
+"""Tests for checkpoint persistence and resumption."""
 
 from __future__ import annotations
 

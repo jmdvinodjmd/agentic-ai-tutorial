@@ -1,4 +1,4 @@
-"""Tests for T02 provider-independent model interfaces."""
+"""Tests for provider-independent model interfaces."""
 
 from __future__ import annotations
 

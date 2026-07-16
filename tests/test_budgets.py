@@ -1,4 +1,4 @@
-"""Tests for T08 shared budgets and circuit breakers."""
+"""Tests for shared budgets and circuit breakers."""
 
 from __future__ import annotations
 

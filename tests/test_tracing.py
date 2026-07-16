@@ -1,4 +1,4 @@
-"""Tests for T09 canonical traces and run manifests."""
+"""Tests for canonical traces and run manifests."""
 
 from __future__ import annotations
 
