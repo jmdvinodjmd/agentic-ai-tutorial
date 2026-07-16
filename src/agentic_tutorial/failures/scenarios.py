@@ -32,12 +32,14 @@ from agentic_tutorial.schemas import (
 from agentic_tutorial.tools import ToolExecutor, ToolRegistry, build_tutorial_registry
 from agentic_tutorial.tracing import TraceEventType, TraceWriter
 
-FIXTURE_PATH = (
-    Path(__file__).parents[3] / "case_study" / "fixtures" / "v1" / "failure_scenarios.json"
-)
-REPLAY_PATH = (
-    Path(__file__).parents[3] / "tests" / "fixtures" / "models" / "replay" / "catalogue_v1.jsonl"
-)
+_REPOSITORY_ROOT = Path(__file__).parents[3]
+_PACKAGE_DATA = Path(__file__).parents[1] / "data"
+FIXTURE_PATH = _REPOSITORY_ROOT / "case_study" / "fixtures" / "v1" / "failure_scenarios.json"
+if not FIXTURE_PATH.is_file():
+    FIXTURE_PATH = _PACKAGE_DATA / "case_study" / "fixtures" / "v1" / "failure_scenarios.json"
+REPLAY_PATH = _REPOSITORY_ROOT / "tests" / "fixtures" / "models" / "replay" / "catalogue_v1.jsonl"
+if not REPLAY_PATH.is_file():
+    REPLAY_PATH = _PACKAGE_DATA / "replay" / "catalogue_v1.jsonl"
 
 
 class ExpectedBehaviour(StrEnum):

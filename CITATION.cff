@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "Please cite this software repository."
+title: "Agentic AI Tutorial"
+type: software
+authors:
+  - name: "Agentic AI Tutorial contributors"
+version: 0.1.0
+license: Apache-2.0
+abstract: "An offline-first teaching repository and reproducible framework comparison for agentic AI."
+repository-code: "https://github.com/jmdvinodjmd/agentic-ai-tutorial"

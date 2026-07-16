@@ -1,6 +1,6 @@
 # Agentic AI Tutorial
 
-Teaching repository and reproducible research artefact for *A Practical Tutorial on Agentic AI*.
+Offline-first teaching repository and reproducible framework comparison for agentic AI.
 
 The repository provides a framework-independent execution foundation, deterministic offline examples, compact execution-pattern demonstrations and a matched research-assistant comparison.
 
@@ -24,9 +24,19 @@ System components define *what the system contains*. Execution patterns define *
 
 ## Set-up
 
+Install the framework-independent core and development tools:
+
 ```bash
 uv sync --dev --frozen
 ```
+
+For the complete matched framework suite, install all optional extras:
+
+```bash
+uv sync --dev --all-extras --frozen
+```
+
+The [compatibility table](docs/compatibility.md) lists locked versions, execution modes and platforms actually tested.
 
 ## Offline smoke check
 
@@ -77,6 +87,8 @@ The matched [OpenAI Agents SDK implementation](case_study/openai_agents/README.m
 
 The [deterministic evaluation harness](evaluation/README.md) defines shared outcome, trajectory and resource metrics. The [matched comparison](evaluation/comparison/README.md) explains and reproduces the four-way experiment. The [safety policy](docs/safety.md) and [controlled failures](case_study/failures/README.md) demonstrate least-privilege execution and explicit failure boundaries.
 
+Three supplementary [teaching notebooks](notebooks/README.md) compose the existing component, pattern and comparison code without duplicating it.
+
 ## Execution modes
 
 Deterministic offline mock execution is the project default and the only mode used for the matched comparison. Strict replay reuses versioned canonical request-response recordings and fails if a request changes. Live execution is never required for core tutorials or tests.
@@ -103,6 +115,16 @@ Check public documentation structure, links and documented commands with:
 ```bash
 uv run python scripts/check_docs.py
 ```
+
+Release-oriented checks are also available individually:
+
+```bash
+uv run python scripts/check_notebooks.py --execute
+uv run python scripts/check_reproducibility.py
+uv run python scripts/audit_public.py
+```
+
+See the [repository architecture](docs/architecture.md), [reproducibility guide](docs/reproducibility.md), [contribution guide](CONTRIBUTING.md), [Code of Conduct](CODE_OF_CONDUCT.md), [security policy](SECURITY.md) and [release checklist](docs/release_checklist.md). Software citation metadata is provided in `CITATION.cff`.
 
 ## Licence
 

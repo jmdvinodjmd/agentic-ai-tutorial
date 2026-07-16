@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  UV_FROZEN: "1"
+  UV_NO_PROGRESS: "1"
+
+jobs:
+  core:
+    name: Core / Python 3.11
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.20"
+          enable-cache: true
+      - run: uv python install 3.11
+      - run: uv lock --check
+      - run: uv sync --dev
+      - run: uv run ruff format --check .
+      - run: uv run ruff check .
+      - name: Strict core typing
+        run: uv run mypy src scripts
+      - name: Core tests without optional framework suites
+        run: >-
+          uv run pytest
+          --ignore=tests/test_langgraph_case_study.py
+          --ignore=tests/test_crewai_case_study.py
+          --ignore=tests/test_openai_agents_case_study.py
+          --ignore=tests/test_framework_comparison.py
+      - run: uv run agentic-tutorial smoke
+      - run: uv run python scripts/check_docs.py
+      - run: uv run python scripts/check_notebooks.py --execute
+      - run: uv run python scripts/check_reproducibility.py
+      - run: uv run python scripts/audit_public.py
+
+  framework:
+    name: ${{ matrix.framework }} / Python 3.11
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - framework: LangGraph
+            extra: langgraph
+            test: tests/test_langgraph_case_study.py
+          - framework: CrewAI
+            extra: crewai
+            test: tests/test_crewai_case_study.py
+          - framework: OpenAI Agents SDK
+            extra: openai-agents
+            test: tests/test_openai_agents_case_study.py
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.20"
+          enable-cache: true
+      - run: uv python install 3.11
+      - run: uv lock --check
+      - run: uv sync --dev --extra ${{ matrix.extra }}
+      - run: uv run pytest ${{ matrix.test }}
+
+  integration:
+    name: Matched integration / Python 3.11
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.20"
+          enable-cache: true
+      - run: uv python install 3.11
+      - run: uv lock --check
+      - run: uv sync --dev --extra langgraph --extra crewai --extra openai-agents
+      - run: uv run mypy
+      - run: uv run pytest
+      - run: uv run python scripts/check_notebooks.py --execute
+      - run: uv run python evaluation/compare.py --repetitions 2
+      - run: uv run python scripts/check_reproducibility.py
+      - run: uv run python scripts/audit_public.py

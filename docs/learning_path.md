@@ -30,9 +30,15 @@ The [research-assistant task](../case_study/README.md) combines the components a
 
 Read the [metric definitions](../evaluation/README.md), then reproduce the [matched comparison](../evaluation/comparison/README.md). Outcome metrics are deterministic; latency and memory remain observational machine-dependent measurements.
 
+## 6. Supplementary notebooks
+
+Use the [teaching notebooks](../notebooks/README.md) to revisit the component sequence, execution flows and matched evidence in a classroom-friendly form. They compose the same package code and are not alternative implementations.
+
 ## Execution modes
 
 - **Mock:** default deterministic scripted responses; used by tests and comparison.
 - **Replay:** strict canonical request-response playback for regression checks.
 - **Local model:** optional real CPU inference using separately downloaded GGUF weights.
 - **Cloud provider:** future optional adapter; never required by the learning path.
+
+For deeper reference, see the [repository architecture](architecture.md), [compatibility table](compatibility.md), [reproducibility guide](reproducibility.md) and [release checklist](release_checklist.md).

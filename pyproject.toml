@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "agentic-ai-tutorial"
 version = "0.1.0"
-description = "Teaching repository and reproducible artefact for A Practical Tutorial on Agentic AI"
+description = "Offline-first teaching repository and reproducible framework comparison for agentic AI"
 readme = "README.md"
 requires-python = ">=3.11,<3.12"
 license = "Apache-2.0"
@@ -22,9 +22,6 @@ agentic-tutorial = "agentic_tutorial.cli:main"
 
 [dependency-groups]
 dev = [
-    "crewai>=1.15.2,<1.16",
-    "langgraph>=1.2.9,<1.3",
-    "openai-agents>=0.17.4,<0.18",
     "mypy>=1.15,<2",
     "pytest>=8.3,<9",
     "ruff>=0.11,<1",
@@ -32,6 +29,10 @@ dev = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/agentic_tutorial", "frameworks"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"case_study/fixtures" = "agentic_tutorial/data/case_study/fixtures"
+"tests/fixtures/models/replay" = "agentic_tutorial/data/replay"
 
 [tool.pytest.ini_options]
 addopts = "--strict-config --strict-markers"

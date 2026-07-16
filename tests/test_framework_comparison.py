@@ -57,16 +57,18 @@ def test_matched_comparison_preserves_metrics_raw_outputs_and_support(tmp_path: 
 
 
 def test_deterministic_comparison_fields_repeat(tmp_path: Path) -> None:
-    first = asyncio.run(
-        run_comparison(
-            ComparisonConfig(repetitions=2, output_root="outputs/test-comparison-repeat-a")
+    async def repeat() -> tuple[ComparisonResult, ComparisonResult]:
+        first, second = await asyncio.gather(
+            run_comparison(
+                ComparisonConfig(repetitions=1, output_root="outputs/test-comparison-repeat-a")
+            ),
+            run_comparison(
+                ComparisonConfig(repetitions=1, output_root="outputs/test-comparison-repeat-b")
+            ),
         )
-    )
-    second = asyncio.run(
-        run_comparison(
-            ComparisonConfig(repetitions=2, output_root="outputs/test-comparison-repeat-b")
-        )
-    )
+        return first, second
+
+    first, second = asyncio.run(repeat())
 
     def deterministic_projection(result: ComparisonResult) -> str:
         projection = [

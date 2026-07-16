@@ -14,7 +14,11 @@ from agentic_tutorial.safety import SafetyPolicy
 from agentic_tutorial.schemas import Budget, TaskSpec, ToolSideEffect
 from agentic_tutorial.tools import ToolRegistry
 
-FIXTURE_ROOT = Path(__file__).parents[3] / "case_study" / "fixtures" / "v1"
+_REPOSITORY_FIXTURE_ROOT = Path(__file__).parents[3] / "case_study" / "fixtures" / "v1"
+_INSTALLED_FIXTURE_ROOT = Path(__file__).parents[1] / "data" / "case_study" / "fixtures" / "v1"
+FIXTURE_ROOT = (
+    _REPOSITORY_FIXTURE_ROOT if _REPOSITORY_FIXTURE_ROOT.is_dir() else _INSTALLED_FIXTURE_ROOT
+)
 CASE_STUDY_PLAN = "Plan: search, select, extract, synthesise, critique, then terminate."
 
 

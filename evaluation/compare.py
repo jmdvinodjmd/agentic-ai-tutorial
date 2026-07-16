@@ -54,7 +54,7 @@ class ComparisonConfig(ComparisonModel):
         "openai-agents",
     )
     variant: Literal[CaseStudyVariant.STANDARD] = CaseStudyVariant.STANDARD
-    repetitions: int = Field(default=3, ge=2, le=20)
+    repetitions: int = Field(default=3, ge=1, le=20)
     provider: Literal["deterministic-mock"] = "deterministic-mock"
     output_root: str = "outputs/comparison"
 

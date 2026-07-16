@@ -25,6 +25,10 @@ models/local/*
 !models/local/model_metadata.json
 .cache/llama.cpp/
 .cache/llama-cpp-python/
+models/**/*.bin
+models/**/*.safetensors
+models/**/*.pt
+models/**/*.onnx
 
 # Secrets and local configuration
 .env
