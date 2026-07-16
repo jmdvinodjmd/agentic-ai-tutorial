@@ -1,0 +1,2 @@
+{"trace_schema_version":"1","run_id":"example-run","sequence":1,"timestamp":"2026-01-01T00:00:00Z","event_type":"run_start","payload":{"task_id":"minimal-research-001"}}
+{"trace_schema_version":"1","run_id":"example-run","sequence":2,"timestamp":"2026-01-01T00:00:01Z","event_type":"termination","payload":{"reason":"completed"}}

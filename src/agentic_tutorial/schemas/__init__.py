@@ -27,6 +27,7 @@ from agentic_tutorial.schemas.models import (
     ToolDefinition,
     ToolResult,
     ToolResultStatus,
+    ToolSideEffect,
     Usage,
 )
 
@@ -57,5 +58,6 @@ __all__ = [
     "ToolDefinition",
     "ToolResult",
     "ToolResultStatus",
+    "ToolSideEffect",
     "Usage",
 ]

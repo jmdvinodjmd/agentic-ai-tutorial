@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import Annotated, Literal, TypeAlias
+from typing import Annotated, ClassVar, Literal, TypeAlias
 
 from pydantic import BaseModel, ConfigDict, Field, JsonValue, model_validator
 
@@ -16,6 +16,14 @@ class CanonicalModel(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     schema_version: Literal["1"] = SCHEMA_VERSION
+
+
+class ToolSideEffect(StrEnum):
+    """Operational effect classification used by shared permissions."""
+
+    READ_ONLY = "read_only"
+    SIMULATED = "simulated"
+    SIDE_EFFECTING = "side_effecting"
 
 
 class MessageRole(StrEnum):
@@ -87,6 +95,8 @@ class TerminationReason(StrEnum):
     MAX_ELAPSED_TIME = "max_elapsed_time"
     MAX_TOKENS = "max_tokens"
     MAX_TOOL_CALLS = "max_tool_calls"
+    MAX_FAILURES = "max_failures"
+    MAX_COST = "max_cost"
     REPEATED_ACTION = "repeated_action"
     ERROR = "error"
     HUMAN_INTERRUPTION = "human_interruption"
@@ -126,6 +136,7 @@ class ToolDefinition(CanonicalModel):
     description: str = Field(min_length=1)
     parameters: dict[str, JsonValue]
     version: str = Field(default="1", min_length=1)
+    side_effect: ToolSideEffect = ToolSideEffect.READ_ONLY
 
 
 class ToolCall(CanonicalModel):
@@ -165,17 +176,25 @@ class ToolResult(CanonicalModel):
 
 
 class Usage(CanonicalModel):
-    """Token and call accounting, with totals suitable for monotonic checks."""
+    """Usage accounting; unavailable token fields are represented by ``None``."""
 
-    input_tokens: int = Field(default=0, ge=0)
-    output_tokens: int = Field(default=0, ge=0)
-    total_tokens: int = Field(default=0, ge=0)
+    input_tokens: int | None = Field(default=None, ge=0)
+    output_tokens: int | None = Field(default=None, ge=0)
+    total_tokens: int | None = Field(default=None, ge=0)
     model_calls: int = Field(default=0, ge=0)
     tool_calls: int = Field(default=0, ge=0)
+    elapsed_seconds: float = Field(default=0.0, ge=0)
+    monetary_cost_usd: float | None = Field(default=None, ge=0)
+    failures: int = Field(default=0, ge=0)
 
     @model_validator(mode="after")
     def validate_token_total(self) -> Usage:
-        if self.total_tokens != self.input_tokens + self.output_tokens:
+        if (
+            self.input_tokens is not None
+            and self.output_tokens is not None
+            and self.total_tokens is not None
+            and self.total_tokens != self.input_tokens + self.output_tokens
+        ):
             raise ValueError("total_tokens must equal input_tokens plus output_tokens")
         return self
 
@@ -227,6 +246,8 @@ class Budget(CanonicalModel):
     max_tokens: int = Field(default=100_000, gt=0)
     max_tool_calls: int = Field(default=20, gt=0)
     max_repeated_actions: int = Field(default=2, gt=0)
+    max_failures: int = Field(default=3, gt=0)
+    max_cost_usd: float | None = Field(default=None, gt=0)
 
 
 class Termination(CanonicalModel):
@@ -263,6 +284,8 @@ class EvidenceItem(CanonicalModel):
 class FinalAnswer(CanonicalModel):
     """The common structured output returned by every implementation."""
 
+    schema_id: ClassVar[str] = "agentic_tutorial.final_answer.v1"
+
     task_id: str = Field(min_length=1)
     answer: str = Field(min_length=1)
     evidence: tuple[EvidenceItem, ...] = ()
@@ -274,7 +297,7 @@ class AgentStep(CanonicalModel):
 
     step_number: int = Field(gt=0)
     status: StepStatus
-    action: Action
+    action: Action | None = None
     model_response: ModelResponse
     tool_result: ToolResult | None = None
     errors: tuple[AgentError, ...] = ()
@@ -282,6 +305,8 @@ class AgentStep(CanonicalModel):
 
     @model_validator(mode="after")
     def validate_action_result(self) -> AgentStep:
+        if self.action is None and self.status is not StepStatus.FAILED:
+            raise ValueError("only failed steps may omit an action")
         if isinstance(self.action, ToolAction) and self.tool_result is None:
             raise ValueError("tool actions require a tool result")
         if isinstance(self.action, FinishAction) and self.tool_result is not None:
@@ -314,8 +339,8 @@ class AgentState(CanonicalModel):
             if not _usage_is_monotonic(previous, step.cumulative_usage):
                 raise ValueError("cumulative usage must be monotonic")
             previous = step.cumulative_usage
-        if self.steps and self.usage != self.steps[-1].cumulative_usage:
-            raise ValueError("state usage must equal the final step cumulative usage")
+        if self.steps and not _usage_is_monotonic(self.steps[-1].cumulative_usage, self.usage):
+            raise ValueError("state usage cannot be lower than final step cumulative usage")
         if not self.steps and self.usage != Usage():
             raise ValueError("state without steps cannot contain consumed usage")
 
@@ -339,5 +364,18 @@ class EvaluationRecord(CanonicalModel):
 
 
 def _usage_is_monotonic(previous: Usage, current: Usage) -> bool:
-    fields = ("input_tokens", "output_tokens", "total_tokens", "model_calls", "tool_calls")
-    return all(getattr(current, field) >= getattr(previous, field) for field in fields)
+    for field in ("input_tokens", "output_tokens", "total_tokens"):
+        old = getattr(previous, field)
+        new = getattr(current, field)
+        if old is not None and (new is None or new < old):
+            return False
+    if previous.monetary_cost_usd is not None and (
+        current.monetary_cost_usd is None or current.monetary_cost_usd < previous.monetary_cost_usd
+    ):
+        return False
+    return (
+        current.model_calls >= previous.model_calls
+        and current.tool_calls >= previous.tool_calls
+        and current.elapsed_seconds >= previous.elapsed_seconds
+        and current.failures >= previous.failures
+    )

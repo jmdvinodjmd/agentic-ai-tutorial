@@ -1,0 +1,21 @@
+{
+  "manifest_version": "1",
+  "run_id": "example-run",
+  "created_at": "2026-01-01T00:00:00Z",
+  "code_version": "fixture-revision",
+  "schema_version": "1",
+  "python_version": "3.11.0",
+  "dependencies": {
+    "agentic-ai-tutorial": "0.1.0",
+    "pydantic": "2.x"
+  },
+  "provider": "deterministic-mock",
+  "model": "offline-fixture-v1",
+  "configuration_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "environment": {
+    "implementation": "CPython",
+    "operating_system": "fixture",
+    "machine": "fixture",
+    "executable_prefix": "<prefix>"
+  }
+}

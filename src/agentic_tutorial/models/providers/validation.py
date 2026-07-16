@@ -54,7 +54,13 @@ def validate_offline_response(
 
 
 def response_schema_identity(response_schema: type[BaseModel] | None) -> str | None:
-    """Return a stable qualified identity for replay compatibility checks."""
+    """Return the explicit stable identifier required for replay schemas."""
     if response_schema is None:
         return None
-    return f"{response_schema.__module__}.{response_schema.__qualname__}"
+    schema_id = getattr(response_schema, "schema_id", None)
+    if not isinstance(schema_id, str) or not schema_id:
+        raise InvalidModelResponseError(
+            "response schema must define a stable non-empty schema_id",
+            provider="shared",
+        )
+    return schema_id

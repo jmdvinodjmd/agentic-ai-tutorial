@@ -64,7 +64,10 @@
           "output_tokens": 5,
           "total_tokens": 15,
           "model_calls": 1,
-          "tool_calls": 0
+          "tool_calls": 0,
+          "elapsed_seconds": 0.0,
+          "monetary_cost_usd": null,
+          "failures": 0
         },
         "finish_reason": "tool_calls"
       },
@@ -88,7 +91,10 @@
         "output_tokens": 5,
         "total_tokens": 15,
         "model_calls": 1,
-        "tool_calls": 1
+        "tool_calls": 1,
+        "elapsed_seconds": 0.0,
+        "monetary_cost_usd": null,
+        "failures": 0
       }
     },
     {
@@ -120,7 +126,10 @@
           "output_tokens": 8,
           "total_tokens": 20,
           "model_calls": 1,
-          "tool_calls": 0
+          "tool_calls": 0,
+          "elapsed_seconds": 0.0,
+          "monetary_cost_usd": null,
+          "failures": 0
         },
         "finish_reason": "stop"
       },
@@ -132,7 +141,10 @@
         "output_tokens": 13,
         "total_tokens": 35,
         "model_calls": 2,
-        "tool_calls": 1
+        "tool_calls": 1,
+        "elapsed_seconds": 0.0,
+        "monetary_cost_usd": null,
+        "failures": 0
       }
     }
   ],
@@ -142,7 +154,10 @@
     "output_tokens": 13,
     "total_tokens": 35,
     "model_calls": 2,
-    "tool_calls": 1
+    "tool_calls": 1,
+    "elapsed_seconds": 0.0,
+    "monetary_cost_usd": null,
+    "failures": 0
   },
   "errors": [],
   "budget": {
@@ -152,7 +167,9 @@
     "max_elapsed_seconds": 300.0,
     "max_tokens": 100000,
     "max_tool_calls": 20,
-    "max_repeated_actions": 2
+    "max_repeated_actions": 2,
+    "max_failures": 3,
+    "max_cost_usd": null
   },
   "termination": {
     "schema_version": "1",

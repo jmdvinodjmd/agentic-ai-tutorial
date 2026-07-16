@@ -1,4 +1,5 @@
 .DS_Store
+.private/
 
 # Python caches and build artefacts
 __pycache__/
@@ -34,4 +35,3 @@ outputs/runs/*
 .idea/
 .vscode/
 *.swp
-
