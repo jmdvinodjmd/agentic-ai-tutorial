@@ -12,10 +12,19 @@ __pycache__/
 htmlcov/
 build/
 dist/
+*.gguf
+*.ggml
+llama-cli
+llama-server
 
 # Local environments and tooling
 .venv/
 .python-version
+models/local/*
+!models/local/README.md
+!models/local/model_metadata.json
+.cache/llama.cpp/
+.cache/llama-cpp-python/
 
 # Secrets and local configuration
 .env

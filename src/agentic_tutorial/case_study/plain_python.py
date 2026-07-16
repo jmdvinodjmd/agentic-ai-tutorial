@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated, Literal
@@ -20,6 +21,7 @@ from agentic_tutorial.case_study.specification import (
 )
 from agentic_tutorial.checkpoints import JsonCheckpointStore
 from agentic_tutorial.execution import PlainPythonAgent
+from agentic_tutorial.models.interface import ModelClient
 from agentic_tutorial.models.providers import DeterministicMockClient
 from agentic_tutorial.models.providers.fixtures import FixtureProvenance, ScriptedScenarioFixture
 from agentic_tutorial.safety import PolicyToolExecutor, SafetyEngine
@@ -64,6 +66,7 @@ class ScriptedFinishAction(BaseModel):
 ScriptedAction = Annotated[
     ScriptedToolAction | ScriptedFinishAction, Field(discriminator="action_type")
 ]
+CaseStudyModelFactory = Callable[[CaseStudyVariant, int], ModelClient]
 
 
 class ModelScripts(BaseModel):
@@ -91,9 +94,11 @@ class PlainPythonCaseStudy:
         *,
         output_root: str | Path = "outputs/runs",
         definition: CaseStudyDefinition | None = None,
+        model_factory: CaseStudyModelFactory | None = None,
     ) -> None:
         self.output_root = Path(output_root)
         self.definition = definition or load_definition()
+        self.model_factory = model_factory
         self.scripts = ModelScripts.model_validate_json(
             (FIXTURE_ROOT / "model_scripts.json").read_text(encoding="utf-8")
         )
@@ -116,6 +121,9 @@ class PlainPythonCaseStudy:
             trace_path.unlink(missing_ok=True)
         trace = TraceWriter(trace_path, run_id=run_id)
         store = JsonCheckpointStore(run_directory / "checkpoints")
+        provider = "deterministic-mock"
+        model_name = "case-study-script-v1"
+        model_metadata: dict[str, JsonValue] | None = None
 
         if variant_name is CaseStudyVariant.CLARIFICATION_REQUIRED:
             state = await self._clarification_state(
@@ -147,8 +155,16 @@ class PlainPythonCaseStudy:
                     ),
                     budget=configured_budget,
                 )
+            model_client = self._model(variant_name, offset=offset)
+            provider = model_client.provider
+            model_name = model_client.model
+            candidate_metadata = getattr(model_client, "manifest_metadata", None)
+            if candidate_metadata is not None:
+                model_metadata = TypeAdapter(dict[str, JsonValue]).validate_python(
+                    candidate_metadata
+                )
             agent = PlainPythonAgent(
-                self._model(variant_name, offset=offset),
+                model_client,
                 PolicyToolExecutor(
                     build_case_study_registry(fail_searches=variant.inject_search_failures),
                     SafetyEngine(self.definition.safety, trace_writer=trace),
@@ -172,10 +188,20 @@ class PlainPythonCaseStudy:
                 state = self._attach_final_answer(state, variant)
                 await store.save(state)
 
-        self._write_outputs(run_directory, state, variant, run_id)
+        self._write_outputs(
+            run_directory,
+            state,
+            variant,
+            run_id,
+            provider=provider,
+            model_name=model_name,
+            model_metadata=model_metadata,
+        )
         return state
 
-    def _model(self, variant: CaseStudyVariant, *, offset: int) -> DeterministicMockClient:
+    def _model(self, variant: CaseStudyVariant, *, offset: int) -> ModelClient:
+        if self.model_factory is not None:
+            return self.model_factory(variant, offset)
         actions = self.scripts.for_variant(variant)[offset:]
         responses = tuple(
             _response(variant, index + offset + 1, action) for index, action in enumerate(actions)
@@ -240,7 +266,11 @@ class PlainPythonCaseStudy:
             evidence.extend(EvidenceItem.model_validate(record) for record in records)
         answer = FinalAnswer(
             task_id=variant.task.task_id,
-            answer=variant.expected_answer or "No final answer is available.",
+            answer=(
+                state.final_answer.answer
+                if state.final_answer is not None
+                else variant.expected_answer or "No final answer is available."
+            ),
             evidence=tuple(evidence),
             limitations=variant.expected_limitations,
         )
@@ -254,6 +284,10 @@ class PlainPythonCaseStudy:
         state: AgentState,
         variant: TaskVariant,
         run_id: str,
+        *,
+        provider: str,
+        model_name: str,
+        model_metadata: dict[str, JsonValue] | None,
     ) -> None:
         directory.mkdir(parents=True, exist_ok=True)
         if state.final_answer is not None:
@@ -291,8 +325,8 @@ class PlainPythonCaseStudy:
         manifest = build_run_manifest(
             run_id=run_id,
             code_version="working-tree",
-            provider="deterministic-mock",
-            model="case-study-script-v1",
+            provider=provider,
+            model=model_name,
             configuration={
                 "variant": variant.name.value,
                 "task_specification_hash": specification_hash,
@@ -301,6 +335,7 @@ class PlainPythonCaseStudy:
             },
             task_specification_hash=specification_hash,
             safety_policy_version=self.definition.safety.policy_version,
+            model_metadata=model_metadata,
             created_at=datetime(2026, 1, 1, tzinfo=UTC),
         )
         write_manifest(directory / "manifest.json", manifest)

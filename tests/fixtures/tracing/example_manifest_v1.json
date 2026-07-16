@@ -14,6 +14,7 @@
   "configuration_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
   "task_specification_hash": null,
   "safety_policy_version": null,
+  "model_metadata": null,
   "environment": {
     "implementation": "CPython",
     "operating_system": "fixture",

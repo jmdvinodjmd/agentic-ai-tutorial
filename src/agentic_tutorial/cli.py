@@ -18,6 +18,10 @@ def build_parser() -> argparse.ArgumentParser:
         "smoke",
         help="Run the deterministic offline repository smoke check.",
     )
+    subparsers.add_parser(
+        "local-fake-smoke",
+        help="Run the local provider through its dependency-free fake runtime.",
+    )
     return parser
 
 
@@ -26,5 +30,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.command == "smoke":
         print(json.dumps({"mode": "offline", "status": "ok"}, sort_keys=True))
+        return 0
+    if args.command == "local-fake-smoke":
+        from agentic_tutorial.models.providers.local_llama_cpp import (
+            run_fake_runtime_smoke,
+        )
+
+        print(json.dumps(run_fake_runtime_smoke(), sort_keys=True))
         return 0
     return 2

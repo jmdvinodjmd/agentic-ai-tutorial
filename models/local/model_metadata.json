@@ -1,0 +1,9 @@
+{
+  "metadata_version": "1",
+  "repository": "Qwen/Qwen3-0.6B-GGUF",
+  "filename": "Qwen3-0.6B-Q8_0.gguf",
+  "quantisation": "Q8_0",
+  "sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+  "licence": "Apache-2.0",
+  "source_revision": "1eaf4d9"
+}

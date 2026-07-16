@@ -38,4 +38,4 @@ class ModelConfig(ModelConfigBase):
     model: str = Field(min_length=1)
     settings: GenerationSettings = Field(default_factory=GenerationSettings)
     options: dict[str, JsonValue] = Field(default_factory=dict)
-    execution_mode: Literal["mock", "replay", "live"] = "mock"
+    execution_mode: Literal["mock", "replay", "local", "live"] = "mock"

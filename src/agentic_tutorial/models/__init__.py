@@ -13,8 +13,12 @@ from agentic_tutorial.models.errors import (
 from agentic_tutorial.models.interface import ModelClient, validate_capabilities
 from agentic_tutorial.models.providers import (
     DeterministicMockClient,
+    LocalLlamaCppClient,
+    LocalLlamaCppConfig,
+    LocalModelMetadata,
     ReplayClient,
     ReplayMismatchError,
+    register_local_llama_cpp_provider,
     register_offline_providers,
 )
 from agentic_tutorial.models.registry import (
@@ -24,12 +28,16 @@ from agentic_tutorial.models.registry import (
 )
 
 register_offline_providers(provider_registry)
+register_local_llama_cpp_provider(provider_registry)
 
 __all__ = [
     "AuthenticationError",
     "DeterministicMockClient",
     "GenerationSettings",
     "InvalidModelResponseError",
+    "LocalLlamaCppClient",
+    "LocalLlamaCppConfig",
+    "LocalModelMetadata",
     "ModelCapabilities",
     "ModelClient",
     "ModelConfig",
@@ -43,5 +51,6 @@ __all__ = [
     "create_model_client",
     "normalise_provider_exception",
     "provider_registry",
+    "register_local_llama_cpp_provider",
     "validate_capabilities",
 ]

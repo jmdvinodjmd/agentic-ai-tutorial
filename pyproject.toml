@@ -11,6 +11,9 @@ requires-python = ">=3.11,<3.12"
 license = "Apache-2.0"
 dependencies = ["pydantic>=2.11,<3"]
 
+[project.optional-dependencies]
+local-llama-cpp = ["llama-cpp-python>=0.3.34,<0.4"]
+
 [project.scripts]
 agentic-tutorial = "agentic_tutorial.cli:main"
 
@@ -27,6 +30,7 @@ packages = ["src/agentic_tutorial"]
 [tool.pytest.ini_options]
 addopts = "--strict-config --strict-markers"
 testpaths = ["tests"]
+markers = ["slow: optional tests requiring a separately installed local model"]
 
 [tool.ruff]
 target-version = "py311"

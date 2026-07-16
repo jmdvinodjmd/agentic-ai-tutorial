@@ -62,6 +62,8 @@ The [deterministic evaluation harness](evaluation/README.md) defines shared outc
 
 Deterministic offline mock execution is the project default. The shared model layer also supports strict replay of versioned canonical JSONL fixtures. Live execution is never required for core tutorials or tests.
 
+An [optional local-model mode](docs/local_model.md) runs a separately downloaded GGUF model through llama.cpp without a cloud API. It never replaces or silently falls back to mock or replay.
+
 ## Repository layout
 
 - `src/agentic_tutorial/`: installable shared package;
