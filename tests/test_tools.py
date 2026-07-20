@@ -4,14 +4,21 @@ from __future__ import annotations
 
 import asyncio
 import time
+from pathlib import Path
 
 from agentic_tutorial.schemas import ToolCall, ToolResultStatus, ToolSideEffect
 from agentic_tutorial.tools import (
+    AnalysisRequest,
     ApprovalToken,
+    SimulatedService,
     ToolExecutor,
     ToolRegistry,
     build_tutorial_registry,
+    file_sha256,
+    summarise_reduction,
 )
+
+ROOT = Path(__file__).parents[1]
 
 
 def test_registry_derives_canonical_schema_and_rejects_duplicates() -> None:
@@ -137,3 +144,35 @@ def test_builtin_catalogue_is_deterministic() -> None:
     first_record = first.content[0]
     assert isinstance(first_record, dict)
     assert first_record["source_id"] == "food-waste-001"
+
+
+def test_approved_analysis_is_reproducible() -> None:
+    path = ROOT / "data/data_analysis_assistant/household_waste.csv"
+    request = AnalysisRequest(
+        group_column="intervention", before_column="before_kg", after_column="after_kg"
+    )
+    assert summarise_reduction(path, request) == {
+        "information_only": 0.0,
+        "meal_planning": 0.8,
+        "smaller_plates": 0.85,
+    }
+    assert file_sha256(path) == file_sha256(path)
+
+
+def test_simulated_service_is_idempotent_and_resumable() -> None:
+    path = ROOT / "data/service_assistant/simulated_service.json"
+    service = SimulatedService.from_path(path)
+    arguments = {
+        "actor": "tutorial-user",
+        "order_id": "ord-100",
+        "new_address": "2 Evidence Road",
+        "idempotency_key": "address-ord-100-v1",
+    }
+    receipt = service.update_address(**arguments)
+    resumed = SimulatedService.resume(service.checkpoint())
+    duplicate = resumed.replay(arguments["idempotency_key"])
+    assert receipt["duplicate"] is False
+    assert duplicate is not None and duplicate["duplicate"] is True
+    assert resumed.read_order("ord-100", actor="tutorial-user")["delivery_address"] == (
+        "2 Evidence Road"
+    )
