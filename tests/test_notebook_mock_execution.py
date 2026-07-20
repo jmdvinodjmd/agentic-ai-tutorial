@@ -13,18 +13,26 @@ from typing import Any
 import pytest
 
 ROOT = Path(__file__).parents[1]
-NOTEBOOK = ROOT / "notebooks" / "patterns" / "plain_python_patterns.ipynb"
+PATTERN_NOTEBOOKS = (
+    (ROOT / "notebooks" / "patterns" / "plain_python_patterns.ipynb", None),
+    (ROOT / "notebooks" / "patterns" / "langgraph_patterns.ipynb", "langgraph"),
+)
 
 
 async def _await_result(result: Awaitable[Any]) -> Any:
     return await result
 
 
-def test_plain_python_pattern_notebook_executes_top_to_bottom(
+@pytest.mark.parametrize(("notebook_path", "required_module"), PATTERN_NOTEBOOKS)
+def test_pattern_notebook_executes_top_to_bottom(
     monkeypatch: pytest.MonkeyPatch,
+    notebook_path: Path,
+    required_module: str | None,
 ) -> None:
+    if required_module is not None:
+        pytest.importorskip(required_module)
     monkeypatch.chdir(ROOT)
-    notebook = json.loads(NOTEBOOK.read_text(encoding="utf-8"))
+    notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
     namespace: dict[str, object] = {"__name__": "__notebook__"}
 
     for index, cell in enumerate(notebook["cells"], start=1):
@@ -35,7 +43,7 @@ def test_plain_python_pattern_notebook_executes_top_to_bottom(
         source = "".join(cell.get("source", []))
         code = compile(
             source,
-            f"{NOTEBOOK.name}:cell-{index}",
+            f"{notebook_path.name}:cell-{index}",
             "exec",
             flags=ast.PyCF_ALLOW_TOP_LEVEL_AWAIT,
         )
