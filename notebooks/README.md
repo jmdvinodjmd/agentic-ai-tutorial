@@ -1,15 +1,22 @@
-# Teaching notebooks
+# Notebook-first learning path
 
-The notebooks are supplementary teaching views over importable, tested package code. They use deterministic mock data, require no credentials or model download, and write transient run artefacts only to ignored repository-relative paths.
+The notebooks are the tutorial rather than wrappers around hidden workflows.
 
-1. [`01_components_walkthrough.ipynb`](01_components_walkthrough.ipynb) moves from model invocation through tools, explicit state, planning, retained context, critique, bounded tracing and human approval.
-2. [`02_execution_patterns.ipynb`](02_execution_patterns.ipynb) executes the six documented orchestration-pattern groups.
-3. [`03_framework_comparison.ipynb`](03_framework_comparison.ipynb) explores the committed matched-comparison snapshot, deterministic outcomes, framework events and fairness caveats.
+## Patterns
 
-Validate and execute every code cell without a notebook server:
+- [Plain Python patterns](patterns/plain_python_patterns.ipynb) currently
+  implements the first reviewed prompt-chaining example.
+- `langgraph_patterns.ipynb`, `crewai_patterns.ipynb` and
+  `openai_agents_patterns.ipynb` will follow after the plain-Python pattern set
+  is complete and reviewed.
 
-```bash
-uv run python scripts/check_notebooks.py --execute
-```
+## Case studies
 
-The comparison notebook loads the committed snapshot for short classroom execution. Reproduce the experiment through the command in the [comparison guide](../evaluation/comparison/README.md). Outputs and execution counts are deliberately cleared in version control.
+Each case-study directory records the planned matched implementations:
+
+- [Research assistant](case_studies/research_assistant/README.md)
+- [Data-analysis assistant](case_studies/data_analysis_assistant/README.md)
+- [Simulated service assistant](case_studies/service_assistant/README.md)
+
+Every completed notebook must run top-to-bottom with the mock backend, expose
+its important intermediate state and finish with evaluation and limitations.

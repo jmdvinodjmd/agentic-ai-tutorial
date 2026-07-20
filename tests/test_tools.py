@@ -127,7 +127,13 @@ def test_side_effect_requires_matching_approval() -> None:
 
 def test_builtin_catalogue_is_deterministic() -> None:
     executor = ToolExecutor(build_tutorial_registry())
-    call = ToolCall(call_id="1", name="catalogue_search", arguments={"query": "agent evaluation"})
+    call = ToolCall(
+        call_id="1", name="catalogue_search", arguments={"query": "household food waste"}
+    )
     first = asyncio.run(executor.execute(call))
     second = asyncio.run(executor.execute(call))
     assert first.content == second.content
+    assert isinstance(first.content, list) and first.content
+    first_record = first.content[0]
+    assert isinstance(first_record, dict)
+    assert first_record["source_id"] == "food-waste-001"

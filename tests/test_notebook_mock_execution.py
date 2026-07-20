@@ -6,12 +6,18 @@ import ast
 import asyncio
 import inspect
 import json
+from collections.abc import Awaitable
 from pathlib import Path
+from typing import Any
 
 import pytest
 
 ROOT = Path(__file__).parents[1]
 NOTEBOOK = ROOT / "notebooks" / "patterns" / "plain_python_patterns.ipynb"
+
+
+async def _await_result(result: Awaitable[Any]) -> Any:
+    return await result
 
 
 def test_plain_python_pattern_notebook_executes_top_to_bottom(
@@ -35,7 +41,7 @@ def test_plain_python_pattern_notebook_executes_top_to_bottom(
         )
         result = eval(code, namespace)
         if inspect.isawaitable(result):
-            asyncio.run(result)
+            asyncio.run(_await_result(result))
 
     state = namespace["state"]
     evaluation = namespace["evaluation"]

@@ -1,131 +1,49 @@
 # Agentic AI Tutorial
 
-Offline-first teaching repository and reproducible framework comparison for agentic AI.
+Notebook-first companion to *A Practical Tutorial on Agentic AI*. Important
+prompts, state, model decisions, routing, loops, stopping conditions, traces,
+evaluation and safety decisions remain visible in the notebooks. Shared Python
+modules contain only genuine infrastructure such as provider adapters, schemas,
+tools, traces, evaluation contracts, safety primitives and fixtures.
 
-The repository provides a framework-independent execution foundation, deterministic offline examples, compact execution-pattern demonstrations and a matched research-assistant comparison.
+## Current milestone
 
-## Learning path
-
-Follow the [complete learning path](docs/learning_path.md) in order:
-
-1. basic model invocation → tools → explicit state;
-2. planning → retained context → critique → bounded tracing;
-3. exact-action human approval;
-4. execution patterns;
-5. the common research-assistant case study;
-6. matched framework implementations and comparison.
-
-System components define *what the system contains*. Execution patterns define *how those components exchange control*. Framework abstractions provide alternative ways to express the same orchestration. The [glossary](docs/glossary.md) fixes the terminology used throughout.
-
-## Requirements
-
-- Python 3.11
-- [uv](https://docs.astral.sh/uv/)
+The preservation branches and first rebuild milestone are complete. The first
+[plain-Python patterns notebook](notebooks/patterns/plain_python_patterns.ipynb)
+contains a runnable prompt-chaining example. The remaining patterns and matched
+case-study notebooks will be added incrementally after review.
 
 ## Set-up
 
-Install the framework-independent core and development tools:
+Requires Python 3.11 and [uv](https://docs.astral.sh/uv/).
 
 ```bash
 uv sync --dev --frozen
 ```
 
-For the complete matched framework suite, install all optional extras:
+Mock execution is deterministic and requires no credentials:
 
 ```bash
-uv sync --dev --all-extras --frozen
+export MODEL_PROVIDER=mock
+uv run pytest
 ```
 
-The [compatibility table](docs/compatibility.md) lists locked versions, execution modes and platforms actually tested.
+Optional providers use `MODEL_PROVIDER=local` or `MODEL_PROVIDER=gemini`.
+Gemini reads only `GEMINI_API_KEY`; local inference reads
+`AGENTIC_TUTORIAL_LOCAL_MODEL_PATH`. Neither is required by CI.
 
-## Offline smoke check
+## Structure
 
-No credentials or internet connection are required after set-up:
+- `notebooks/patterns/` — matched pattern notebooks, beginning with plain Python;
+- `notebooks/case_studies/` — research, data-analysis and simulated-service cases;
+- `src/agentic_tutorial/` — shared infrastructure only;
+- `data/` — small versioned fixtures for the three cases;
+- `tests/` — contract, qualification and mock notebook tests;
+- `models/` — local-model provenance and qualification metadata.
 
-```bash
-uv run agentic-tutorial smoke
-```
-
-Expected output:
-
-```json
-{"mode": "offline", "status": "ok"}
-```
-
-CLI help is available with:
-
-```bash
-uv run agentic-tutorial --help
-```
-
-## Development checks
-
-```bash
-make format
-make lint
-make typecheck
-make test
-make smoke
-make check
-```
-
-`make check` runs formatting verification, linting, static type checking, tests and the offline smoke check.
-
-## Runnable examples
-
-The [progressive tutorials](tutorials/README.md) introduce model calls, tools, state, planning, retained context, critique, bounded execution and human approval one concept at a time.
-
-The [execution patterns](patterns/README.md) demonstrate six common orchestration flows. All examples run offline with deterministic local fixtures.
-
-The [research-assistant case study](case_study/README.md) provides a versioned common task and a complete framework-independent reference implementation.
-
-The matched [LangGraph implementation](case_study/langgraph/README.md) expresses the same task as explicit graph nodes and conditional edges while preserving the common contracts and evaluator.
-
-The matched [CrewAI implementation](case_study/crewai/README.md) demonstrates functionally separated specialist assignments using a bounded sequential Flow.
-
-The matched [OpenAI Agents SDK implementation](case_study/openai_agents/README.md) uses SDK agents, tools, handoffs, context and guardrails while excluding the autonomous `Runner` from the controlled comparison.
-
-The [deterministic evaluation harness](evaluation/README.md) defines shared outcome, trajectory and resource metrics. The [matched comparison](evaluation/comparison/README.md) explains and reproduces the four-way experiment. The [safety policy](docs/safety.md) and [controlled failures](case_study/failures/README.md) demonstrate least-privilege execution and explicit failure boundaries.
-
-Three supplementary [teaching notebooks](notebooks/README.md) compose the existing component, pattern and comparison code without duplicating it.
-
-## Execution modes
-
-Deterministic offline mock execution is the project default and the only mode used for the matched comparison. Strict replay reuses versioned canonical request-response recordings and fails if a request changes. Live execution is never required for core tutorials or tests.
-
-An [optional local-model mode](docs/local_model.md) runs a separately downloaded GGUF model through llama.cpp without a cloud API. It never replaces or silently falls back to mock or replay.
-
-Cloud providers remain future optional adapters. They must implement the same `ModelClient` contract and cannot replace mock or replay as the reproducible default.
-
-## Repository layout
-
-- `src/agentic_tutorial/`: installable shared package;
-- `tutorials/`: progressive teaching examples;
-- `patterns/`: grouped execution-pattern examples;
-- `frameworks/`: reusable framework-specific orchestration only;
-- `case_study/`: runnable case-study entry points, configuration and documentation;
-- `evaluation/`: experiment configuration and reports;
-- `tests/`: automated tests and versioned fixtures;
-- `notebooks/`: supplementary notebooks only;
-- `outputs/runs/`: generated run artefacts, ignored unless explicitly declared fixtures;
-- `docs/`: project specifications and documentation.
-
-Check public documentation structure, links and documented commands with:
-
-```bash
-uv run python scripts/check_docs.py
-```
-
-Release-oriented checks are also available individually:
-
-```bash
-uv run python scripts/check_notebooks.py --execute
-uv run python scripts/check_reproducibility.py
-uv run python scripts/audit_public.py
-```
-
-See the [repository architecture](docs/architecture.md), [reproducibility guide](docs/reproducibility.md), [contribution guide](CONTRIBUTING.md), [Code of Conduct](CODE_OF_CONDUCT.md), [security policy](SECURITY.md) and [release checklist](docs/release_checklist.md). Software citation metadata is provided in `CITATION.cff`.
+The complete notebook map, paper-section map, Colab links and reproducibility
+instructions will be added after the replacement notebooks are implemented.
 
 ## Licence
 
-This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for the full terms.
+Apache License 2.0. See [LICENSE](LICENSE).

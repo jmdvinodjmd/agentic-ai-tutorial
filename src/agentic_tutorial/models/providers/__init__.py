@@ -9,7 +9,6 @@ from agentic_tutorial.models.providers.local_llama_cpp import (
 )
 from agentic_tutorial.models.providers.mock import DeterministicMockClient
 from agentic_tutorial.models.providers.registration import register_offline_providers
-from agentic_tutorial.models.providers.replay import ReplayClient, ReplayMismatchError
 
 __all__ = [
     "DeterministicMockClient",
@@ -17,8 +16,6 @@ __all__ = [
     "LocalLlamaCppClient",
     "LocalLlamaCppConfig",
     "LocalModelMetadata",
-    "ReplayClient",
-    "ReplayMismatchError",
     "register_gemini_provider",
     "register_local_llama_cpp_provider",
     "register_offline_providers",
