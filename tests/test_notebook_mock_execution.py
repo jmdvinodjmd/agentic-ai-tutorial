@@ -43,7 +43,15 @@ def test_plain_python_pattern_notebook_executes_top_to_bottom(
         if inspect.isawaitable(result):
             asyncio.run(_await_result(result))
 
-    state = namespace["state"]
-    evaluation = namespace["evaluation"]
-    assert isinstance(state, dict) and state["termination"] == "criteria_met"
-    assert isinstance(evaluation, dict) and all(evaluation.values())
+    evaluations = namespace["pattern_evaluations"]
+    assert isinstance(evaluations, dict)
+    assert set(evaluations) == {
+        "prompt_chaining",
+        "routing",
+        "parallelisation",
+        "react",
+        "planner_executor",
+        "critic_reviser",
+        "orchestrator_worker",
+    }
+    assert all(evaluations.values())
