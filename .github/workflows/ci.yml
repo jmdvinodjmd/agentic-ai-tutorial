@@ -34,9 +34,22 @@ jobs:
       - name: Contract and mock notebook tests
         run: uv run pytest -q
 
-  langgraph-notebook:
-    name: LangGraph notebook / Python 3.11
+  framework-notebooks:
+    name: ${{ matrix.label }} notebook / Python 3.11
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: LangGraph
+            extra: langgraph
+            selector: langgraph
+          - label: CrewAI
+            extra: crewai
+            selector: crewai
+          - label: OpenAI Agents
+            extra: openai-agents
+            selector: agents
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
@@ -44,6 +57,6 @@ jobs:
           version: "0.11.20"
           enable-cache: true
       - run: uv python install 3.11
-      - run: uv sync --dev --extra langgraph --frozen
-      - name: Execute matched LangGraph patterns with mock decisions
-        run: uv run pytest -q tests/test_notebook_mock_execution.py -k langgraph
+      - run: uv sync --dev --extra ${{ matrix.extra }} --frozen
+      - name: Execute matched framework patterns with mock decisions
+        run: uv run pytest -q tests/test_notebook_mock_execution.py -k ${{ matrix.selector }}

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ast
 import asyncio
+import importlib.util
 import inspect
 import json
 from collections.abc import Awaitable
@@ -16,6 +17,8 @@ ROOT = Path(__file__).parents[1]
 PATTERN_NOTEBOOKS = (
     (ROOT / "notebooks" / "patterns" / "plain_python_patterns.ipynb", None),
     (ROOT / "notebooks" / "patterns" / "langgraph_patterns.ipynb", "langgraph"),
+    (ROOT / "notebooks" / "patterns" / "crewai_patterns.ipynb", "crewai"),
+    (ROOT / "notebooks" / "patterns" / "openai_agents_patterns.ipynb", "agents"),
 )
 
 
@@ -29,8 +32,8 @@ def test_pattern_notebook_executes_top_to_bottom(
     notebook_path: Path,
     required_module: str | None,
 ) -> None:
-    if required_module is not None:
-        pytest.importorskip(required_module)
+    if required_module is not None and importlib.util.find_spec(required_module) is None:
+        pytest.skip(f"optional dependency {required_module} is not installed")
     monkeypatch.chdir(ROOT)
     notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
     namespace: dict[str, object] = {"__name__": "__notebook__"}
