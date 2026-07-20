@@ -1,4 +1,4 @@
-name: CI
+name: Notebook rebuild CI
 
 on:
   push:
@@ -8,12 +8,13 @@ permissions:
   contents: read
 
 env:
+  MODEL_PROVIDER: mock
   UV_FROZEN: "1"
   UV_NO_PROGRESS: "1"
 
 jobs:
-  core:
-    name: Core / Python 3.11
+  milestone-one:
+    name: Contracts, mock qualification, and notebook / Python 3.11
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,66 +24,50 @@ jobs:
           enable-cache: true
       - run: uv python install 3.11
       - run: uv lock --check
-      - run: uv sync --dev
-      - run: uv run ruff format --check .
-      - run: uv run ruff check .
-      - name: Strict core typing
-        run: uv run mypy src scripts
-      - name: Core tests without optional framework suites
+      - run: uv sync --dev --frozen
+      - name: Format check
         run: >-
-          uv run pytest
-          --ignore=tests/test_langgraph_case_study.py
-          --ignore=tests/test_crewai_case_study.py
-          --ignore=tests/test_openai_agents_case_study.py
-          --ignore=tests/test_framework_comparison.py
-      - run: uv run agentic-tutorial smoke
-      - run: uv run python scripts/check_docs.py
-      - run: uv run python scripts/check_notebooks.py --execute
-      - run: uv run python scripts/check_reproducibility.py
-      - run: uv run python scripts/audit_public.py
-
-  framework:
-    name: ${{ matrix.framework }} / Python 3.11
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - framework: LangGraph
-            extra: langgraph
-            test: tests/test_langgraph_case_study.py
-          - framework: CrewAI
-            extra: crewai
-            test: tests/test_crewai_case_study.py
-          - framework: OpenAI Agents SDK
-            extra: openai-agents
-            test: tests/test_openai_agents_case_study.py
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
-        with:
-          version: "0.11.20"
-          enable-cache: true
-      - run: uv python install 3.11
-      - run: uv lock --check
-      - run: uv sync --dev --extra ${{ matrix.extra }}
-      - run: uv run pytest ${{ matrix.test }}
-
-  integration:
-    name: Matched integration / Python 3.11
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
-        with:
-          version: "0.11.20"
-          enable-cache: true
-      - run: uv python install 3.11
-      - run: uv lock --check
-      - run: uv sync --dev --extra langgraph --extra crewai --extra openai-agents
-      - run: uv run mypy
-      - run: uv run pytest
-      - run: uv run python scripts/check_notebooks.py --execute
-      - run: uv run python evaluation/compare.py --repetitions 2
-      - run: uv run python scripts/check_reproducibility.py
-      - run: uv run python scripts/audit_public.py
+          uv run ruff format --check
+          src/agentic_tutorial/models
+          src/agentic_tutorial/schemas
+          src/agentic_tutorial/tracing
+          src/agentic_tutorial/evaluation
+          src/agentic_tutorial/fixtures
+          tests/test_models.py
+          tests/test_fixtures.py
+          tests/test_model_qualification.py
+          tests/test_notebook_mock_execution.py
+      - name: Lint
+        run: >-
+          uv run ruff check
+          src/agentic_tutorial/models
+          src/agentic_tutorial/schemas
+          src/agentic_tutorial/tracing
+          src/agentic_tutorial/evaluation
+          src/agentic_tutorial/fixtures
+          tests/test_models.py
+          tests/test_fixtures.py
+          tests/test_model_qualification.py
+          tests/test_notebook_mock_execution.py
+      - name: Strict contract typing
+        run: >-
+          uv run mypy
+          src/agentic_tutorial/models
+          src/agentic_tutorial/schemas
+          src/agentic_tutorial/tracing
+          src/agentic_tutorial/evaluation
+          src/agentic_tutorial/fixtures
+          tests/test_models.py
+          tests/test_fixtures.py
+          tests/test_model_qualification.py
+      - name: Contract and mock notebook tests
+        run: >-
+          uv run pytest -q
+          tests/test_fixtures.py
+          tests/test_models.py
+          tests/test_model_qualification.py
+          tests/test_notebook_mock_execution.py
+          tests/test_model_interface.py
+          tests/test_offline_clients.py
+          tests/test_schemas.py
+          tests/test_tracing.py

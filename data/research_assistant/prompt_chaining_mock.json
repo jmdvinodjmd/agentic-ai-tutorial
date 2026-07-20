@@ -1,0 +1,32 @@
+{
+  "fixture_version": "1",
+  "scenario": "plain-python-prompt-chain",
+  "provenance": {
+    "source": "hand-authored tutorial fixture",
+    "description": "Two deterministic structured decisions for the prompt-chaining milestone.",
+    "recorded_by": "Agentic AI Tutorial maintainers"
+  },
+  "responses": [
+    {
+      "response_id": "prompt-chain-extract",
+      "provider": "deterministic-mock",
+      "model": "prompt-chain-mock-v1",
+      "structured_output": {
+        "claim": "Smaller plates reduced household food waste in the supplied trial.",
+        "source_id": "food-waste-001",
+        "supported": true
+      },
+      "finish_reason": "stop"
+    },
+    {
+      "response_id": "prompt-chain-synthesise",
+      "provider": "deterministic-mock",
+      "model": "prompt-chain-mock-v1",
+      "structured_output": {
+        "answer": "In the supplied trial, smaller plates reduced household food waste.",
+        "source_ids": ["food-waste-001"]
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}

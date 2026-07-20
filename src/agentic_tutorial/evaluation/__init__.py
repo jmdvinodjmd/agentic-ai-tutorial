@@ -8,6 +8,13 @@ from agentic_tutorial.evaluation.models import (
     ExperimentConfig,
     ExperimentResult,
 )
+from agentic_tutorial.evaluation.qualification import (
+    ModelCandidate,
+    QualificationCheck,
+    QualificationReport,
+    qualify_model,
+    select_first_qualified,
+)
 from agentic_tutorial.evaluation.runner import ExperimentRunner
 
 __all__ = [
@@ -17,5 +24,10 @@ __all__ = [
     "ExperimentConfig",
     "ExperimentResult",
     "ExperimentRunner",
+    "ModelCandidate",
+    "QualificationCheck",
+    "QualificationReport",
     "evaluate_run",
+    "qualify_model",
+    "select_first_qualified",
 ]

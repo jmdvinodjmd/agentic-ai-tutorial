@@ -1,0 +1,13 @@
+{
+  "qualification_version": "1",
+  "threshold": {"required_passes": 8, "total_checks": 8},
+  "candidates": [
+    {
+      "model": "Qwen3-0.6B-Q8_0",
+      "parameter_count_billions": 0.6,
+      "metadata_path": "models/local/model_metadata.json"
+    }
+  ],
+  "selection_status": "not_yet_qualified",
+  "selection_note": "Run the optional local qualification suite before advertising a selected local model. Add larger candidates only if this smallest candidate fails."
+}
