@@ -20,24 +20,23 @@ PATTERN_NOTEBOOKS = (
     (ROOT / "notebooks" / "patterns" / "crewai_patterns.ipynb", "crewai"),
     (ROOT / "notebooks" / "patterns" / "openai_agents_patterns.ipynb", "agents"),
 )
+CASE_NOTEBOOKS = (
+    (ROOT / "notebooks/case_studies/research_assistant/plain_python.ipynb", None),
+    (ROOT / "notebooks/case_studies/research_assistant/langgraph.ipynb", "langgraph"),
+    (ROOT / "notebooks/case_studies/data_analysis_assistant/plain_python.ipynb", None),
+    (ROOT / "notebooks/case_studies/data_analysis_assistant/langgraph.ipynb", "langgraph"),
+    (ROOT / "notebooks/case_studies/service_assistant/plain_python.ipynb", None),
+    (ROOT / "notebooks/case_studies/service_assistant/langgraph.ipynb", "langgraph"),
+)
 
 
 async def _await_result(result: Awaitable[Any]) -> Any:
     return await result
 
 
-@pytest.mark.parametrize(("notebook_path", "required_module"), PATTERN_NOTEBOOKS)
-def test_pattern_notebook_executes_top_to_bottom(
-    monkeypatch: pytest.MonkeyPatch,
-    notebook_path: Path,
-    required_module: str | None,
-) -> None:
-    if required_module is not None and importlib.util.find_spec(required_module) is None:
-        pytest.skip(f"optional dependency {required_module} is not installed")
-    monkeypatch.chdir(ROOT)
+def _execute_notebook(notebook_path: Path) -> dict[str, object]:
     notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
     namespace: dict[str, object] = {"__name__": "__notebook__"}
-
     for index, cell in enumerate(notebook["cells"], start=1):
         if cell.get("cell_type") != "code":
             continue
@@ -53,6 +52,19 @@ def test_pattern_notebook_executes_top_to_bottom(
         result = eval(code, namespace)
         if inspect.isawaitable(result):
             asyncio.run(_await_result(result))
+    return namespace
+
+
+@pytest.mark.parametrize(("notebook_path", "required_module"), PATTERN_NOTEBOOKS)
+def test_pattern_notebook_executes_top_to_bottom(
+    monkeypatch: pytest.MonkeyPatch,
+    notebook_path: Path,
+    required_module: str | None,
+) -> None:
+    if required_module is not None and importlib.util.find_spec(required_module) is None:
+        pytest.skip(f"optional dependency {required_module} is not installed")
+    monkeypatch.chdir(ROOT)
+    namespace = _execute_notebook(notebook_path)
 
     evaluations = namespace["pattern_evaluations"]
     assert isinstance(evaluations, dict)
@@ -65,4 +77,20 @@ def test_pattern_notebook_executes_top_to_bottom(
         "critic_reviser",
         "orchestrator_worker",
     }
+    assert all(evaluations.values())
+
+
+@pytest.mark.parametrize(("notebook_path", "required_module"), CASE_NOTEBOOKS)
+def test_case_notebook_executes_top_to_bottom(
+    monkeypatch: pytest.MonkeyPatch,
+    notebook_path: Path,
+    required_module: str | None,
+) -> None:
+    if required_module is not None and importlib.util.find_spec(required_module) is None:
+        pytest.skip(f"optional dependency {required_module} is not installed")
+    monkeypatch.chdir(ROOT)
+    namespace = _execute_notebook(notebook_path)
+    evaluations = namespace["evaluation"]
+    assert isinstance(evaluations, dict)
+    assert set(evaluations) == {"component", "trajectory", "task", "safety", "repeated_run"}
     assert all(evaluations.values())
