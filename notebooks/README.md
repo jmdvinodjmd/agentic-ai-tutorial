@@ -1,15 +1,26 @@
-# Teaching notebooks
+# Notebook-first learning path
 
-The notebooks are supplementary teaching views over importable, tested package code. They use deterministic mock data, require no credentials or model download, and write transient run artefacts only to ignored repository-relative paths.
+The notebooks are the tutorial: prompts, state, decisions, execution boundaries,
+traces, stopping rules, evaluations and limitations are visible in each file.
 
-1. [`01_components_walkthrough.ipynb`](01_components_walkthrough.ipynb) moves from model invocation through tools, explicit state, planning, retained context, critique, bounded tracing and human approval.
-2. [`02_execution_patterns.ipynb`](02_execution_patterns.ipynb) executes the six documented orchestration-pattern groups.
-3. [`03_framework_comparison.ipynb`](03_framework_comparison.ipynb) explores the committed matched-comparison snapshot, deterministic outcomes, framework events and fairness caveats.
+## Patterns
 
-Validate and execute every code cell without a notebook server:
+- [Plain Python](patterns/plain_python_patterns.ipynb)
+- [LangGraph](patterns/langgraph_patterns.ipynb)
+- [CrewAI Flow](patterns/crewai_patterns.ipynb)
+- [OpenAI Agents SDK](patterns/openai_agents_patterns.ipynb)
 
-```bash
-uv run python scripts/check_notebooks.py --execute
-```
+Each implements prompt chaining, routing, parallelisation, ReAct, planner–executor,
+critic–reviser and orchestrator–worker over matched fixtures and acceptance checks.
 
-The comparison notebook loads the committed snapshot for short classroom execution. Reproduce the experiment through the command in the [comparison guide](../evaluation/comparison/README.md). Outputs and execution counts are deliberately cleared in version control.
+## Case studies
+
+| Case | Plain Python | LangGraph | CrewAI | OpenAI Agents |
+|---|---|---|---|---|
+| Research assistant | [open](case_studies/research_assistant/plain_python.ipynb) | [open](case_studies/research_assistant/langgraph.ipynb) | [open](case_studies/research_assistant/crewai.ipynb) | [open](case_studies/research_assistant/openai_agents.ipynb) |
+| Data analysis | [open](case_studies/data_analysis_assistant/plain_python.ipynb) | [open](case_studies/data_analysis_assistant/langgraph.ipynb) | [open](case_studies/data_analysis_assistant/crewai.ipynb) | [open](case_studies/data_analysis_assistant/openai_agents.ipynb) |
+| Simulated service | [open](case_studies/service_assistant/plain_python.ipynb) | [open](case_studies/service_assistant/langgraph.ipynb) | [open](case_studies/service_assistant/crewai.ipynb) | [open](case_studies/service_assistant/openai_agents.ipynb) |
+
+All notebooks default to versioned mock decisions, run top-to-bottom without
+credentials and finish with component, trajectory, task, safety and repeated-run
+evaluation. Framework extras are installed only for the corresponding notebook.

@@ -1,0 +1,7 @@
+{
+  "dataset_version": "1",
+  "accounts": {"acct-001": {"owner": "tutorial-user", "status": "active"}},
+  "orders": {"ord-100": {"account_id": "acct-001", "status": "processing", "delivery_address": "1 Tutorial Way"}},
+  "permissions": {"tutorial-user": ["account:read", "order:read", "order:update_address"]},
+  "approved_request": {"order_id": "ord-100", "new_address": "2 Evidence Road", "idempotency_key": "address-ord-100-v1"}
+}

@@ -5,13 +5,17 @@ from __future__ import annotations
 from agentic_tutorial.schemas import ToolSideEffect
 from agentic_tutorial.tools.registry import ToolRegistry
 
-PAPERS = (
+EVIDENCE_RECORDS = (
     {
-        "paper_id": "paper-001",
-        "title": "Evaluating Agent Trajectories",
-        "topic": "agent evaluation",
+        "source_id": "food-waste-001",
+        "title": "Plate-size intervention trial",
+        "topic": "household food waste smaller plates",
     },
-    {"paper_id": "paper-002", "title": "Deterministic Workflow Testing", "topic": "testing"},
+    {
+        "source_id": "food-waste-002",
+        "title": "Household meal-planning study",
+        "topic": "household food waste meal planning",
+    },
 )
 
 
@@ -24,15 +28,15 @@ def build_tutorial_registry() -> ToolRegistry:
         return left + right
 
     @registry.tool(
-        description="Search the fixed tutorial paper catalogue.",
+        description="Search the fixed household-food-waste evidence catalogue.",
         side_effect=ToolSideEffect.READ_ONLY,
     )
     def catalogue_search(query: str) -> list[dict[str, str]]:
         normalised = query.casefold()
         return [
-            paper
-            for paper in PAPERS
-            if normalised in f"{paper['title']} {paper['topic']}".casefold()
+            record
+            for record in EVIDENCE_RECORDS
+            if normalised in f"{record['title']} {record['topic']}".casefold()
         ]
 
     return registry

@@ -1,3 +1,0 @@
-{"trace_schema_version":"1","run_id":"pattern-critic-reviser","sequence":1,"timestamp":"2026-07-16T19:57:58.004848Z","event_type":"run_start","payload":{"pattern":"critic-reviser"}}
-{"trace_schema_version":"1","run_id":"pattern-critic-reviser","sequence":2,"timestamp":"2026-07-16T19:57:58.005407Z","event_type":"decision","payload":{"result":{"pattern":"critic-reviser","answer":"Paper paper-001 is relevant.","revisions":1,"limitation":"critique can still accept a plausible error"}}}
-{"trace_schema_version":"1","run_id":"pattern-critic-reviser","sequence":3,"timestamp":"2026-07-16T19:57:58.010158Z","event_type":"termination","payload":{"reason":"completed"}}

@@ -32,6 +32,14 @@ from agentic_tutorial.schemas.models import (
     ToolSideEffect,
     Usage,
 )
+from agentic_tutorial.schemas.qualification import (
+    CriticDecision,
+    PlanDecision,
+    PlanStep,
+    RecoveryDecision,
+    RouteDecision,
+    StopDecision,
+)
 
 __all__ = [
     "SCHEMA_VERSION",
@@ -41,6 +49,7 @@ __all__ = [
     "AgentState",
     "AgentStep",
     "Budget",
+    "CriticDecision",
     "ErrorClass",
     "EvaluationRecord",
     "EvidenceItem",
@@ -52,7 +61,12 @@ __all__ = [
     "Message",
     "MessageRole",
     "ModelResponse",
+    "PlanDecision",
+    "PlanStep",
+    "RecoveryDecision",
+    "RouteDecision",
     "StepStatus",
+    "StopDecision",
     "TaskSpec",
     "Termination",
     "TerminationReason",

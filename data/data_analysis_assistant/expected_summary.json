@@ -1,0 +1,10 @@
+{
+  "dataset_version": "1",
+  "rows": 6,
+  "columns": ["household_id", "intervention", "before_kg", "after_kg", "weeks"],
+  "mean_reduction_kg": {
+    "information_only": 0.0,
+    "meal_planning": 0.8,
+    "smaller_plates": 0.85
+  }
+}

@@ -1,0 +1,173 @@
+{
+  "fixture_version": "1",
+  "provenance": {
+    "source": "hand-authored tutorial decisions",
+    "description": "Matched deterministic model decisions for seven household-food-waste pattern examples.",
+    "recorded_by": "Agentic AI Tutorial maintainers"
+  },
+  "catalogue": [
+    {
+      "source_id": "food-waste-001",
+      "title": "Plate-size intervention trial",
+      "topics": ["smaller plates", "portion sizing"],
+      "evidence": "Smaller plates reduced measured household food waste when portion sizes were controlled."
+    },
+    {
+      "source_id": "food-waste-002",
+      "title": "Household meal-planning study",
+      "topics": ["meal planning", "shopping lists"],
+      "evidence": "Meal planning reduced avoidable waste when households followed the plan during shopping."
+    },
+    {
+      "source_id": "food-waste-003",
+      "title": "Information-only campaign",
+      "topics": ["education", "awareness"],
+      "evidence": "Information alone produced uncertain effects and did not consistently reduce measured waste."
+    }
+  ],
+  "scenarios": {
+    "prompt_chaining": [
+      {
+        "response_id": "chain-extract",
+        "provider": "deterministic-mock",
+        "model": "patterns-mock-v1",
+        "structured_output": {
+          "claim": "Smaller plates reduced measured household food waste when portion sizes were controlled.",
+          "source_id": "food-waste-001",
+          "supported": true
+        },
+        "finish_reason": "stop"
+      },
+      {
+        "response_id": "chain-answer",
+        "provider": "deterministic-mock",
+        "model": "patterns-mock-v1",
+        "structured_output": {
+          "answer": "Smaller plates reduced household food waste under controlled portion sizing.",
+          "source_ids": ["food-waste-001"]
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "routing": [
+      {
+        "response_id": "route-research",
+        "provider": "deterministic-mock",
+        "model": "patterns-mock-v1",
+        "structured_output": {
+          "route": "research",
+          "reason": "The request asks for evidence synthesis."
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "parallelisation": [
+      {
+        "response_id": "parallel-plan",
+        "provider": "deterministic-mock",
+        "model": "patterns-mock-v1",
+        "structured_output": {
+          "queries": ["smaller plates", "meal planning"],
+          "aggregation": "validated_union"
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "react": [
+      {
+        "response_id": "react-search",
+        "provider": "deterministic-mock",
+        "model": "patterns-mock-v1",
+        "tool_calls": [
+          {
+            "call_id": "react-call-1",
+            "name": "search_catalogue",
+            "arguments": {"query": "meal planning", "max_results": 2}
+          }
+        ],
+        "finish_reason": "tool_calls"
+      },
+      {
+        "response_id": "react-finish",
+        "provider": "deterministic-mock",
+        "model": "patterns-mock-v1",
+        "structured_output": {
+          "answer": "Meal planning reduced waste when followed during shopping.",
+          "source_ids": ["food-waste-002"]
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "planner_executor": [
+      {
+        "response_id": "planner-plan",
+        "provider": "deterministic-mock",
+        "model": "patterns-mock-v1",
+        "structured_output": {
+          "steps": [
+            {"step_id": "search", "objective": "Search for meal-planning evidence."},
+            {"step_id": "validate", "objective": "Validate source provenance.", "depends_on": ["search"]},
+            {"step_id": "report", "objective": "Report the validated finding.", "depends_on": ["validate"]}
+          ]
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "critic_reviser": [
+      {
+        "response_id": "critic-draft",
+        "provider": "deterministic-mock",
+        "model": "patterns-mock-v1",
+        "structured_output": {
+          "answer": "All household food-waste interventions work.",
+          "source_ids": []
+        },
+        "finish_reason": "stop"
+      },
+      {
+        "response_id": "critic-review",
+        "provider": "deterministic-mock",
+        "model": "patterns-mock-v1",
+        "structured_output": {
+          "accepted": false,
+          "issues": ["The universal claim is unsupported and omits conditions."]
+        },
+        "finish_reason": "stop"
+      },
+      {
+        "response_id": "critic-revision",
+        "provider": "deterministic-mock",
+        "model": "patterns-mock-v1",
+        "structured_output": {
+          "answer": "Smaller plates and meal planning reduced waste under the conditions reported by their studies.",
+          "source_ids": ["food-waste-001", "food-waste-002"]
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "orchestrator_worker": [
+      {
+        "response_id": "orchestrator-assign",
+        "provider": "deterministic-mock",
+        "model": "patterns-mock-v1",
+        "structured_output": {
+          "assignments": [
+            {"worker": "intervention_reviewer", "query": "smaller plates"},
+            {"worker": "planning_reviewer", "query": "meal planning"}
+          ]
+        },
+        "finish_reason": "stop"
+      },
+      {
+        "response_id": "orchestrator-synthesis",
+        "provider": "deterministic-mock",
+        "model": "patterns-mock-v1",
+        "structured_output": {
+          "answer": "Two supported approaches were smaller plates and meal planning, each with stated conditions.",
+          "source_ids": ["food-waste-001", "food-waste-002"]
+        },
+        "finish_reason": "stop"
+      }
+    ]
+  }
+}

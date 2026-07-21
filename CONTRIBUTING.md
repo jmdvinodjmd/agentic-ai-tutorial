@@ -11,7 +11,11 @@ uv sync --dev --frozen
 uv sync --dev --all-extras --frozen
 ```
 
-Keep shared schemas, tools, prompts, policies and metrics in `src/agentic_tutorial/`. Framework folders should contain orchestration only. New iterative flows must be bounded, deterministic offline tests must remain the default, and consequential actions require exact-action approval.
+Keep prompts and orchestration visible in notebooks. Shared schemas, tools,
+provider adapters, trace contracts, evaluation metrics, safety primitives and
+fixtures belong in `src/agentic_tutorial/`. New iterative flows must be bounded,
+deterministic mock tests remain the default, and consequential actions require
+exact-action approval.
 
 Before opening a change, run:
 

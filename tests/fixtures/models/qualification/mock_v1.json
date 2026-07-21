@@ -1,0 +1,98 @@
+{
+  "fixture_version": "1",
+  "scenario": "model-qualification",
+  "provenance": {
+    "source": "hand-authored qualification fixture",
+    "description": "Deterministic decisions covering every required qualification probe.",
+    "recorded_by": "Agentic AI Tutorial maintainers"
+  },
+  "responses": [
+    {
+      "response_id": "qualification-route",
+      "provider": "deterministic-mock",
+      "model": "qualification-mock-v1",
+      "structured_output": {
+        "route": "research",
+        "reason": "The request asks for evidence synthesis."
+      },
+      "finish_reason": "stop"
+    },
+    {
+      "response_id": "qualification-tool",
+      "provider": "deterministic-mock",
+      "model": "qualification-mock-v1",
+      "tool_calls": [
+        {
+          "call_id": "qualification-search-call",
+          "name": "search_catalogue",
+          "arguments": {
+            "query": "household food waste interventions",
+            "max_results": 3
+          }
+        }
+      ],
+      "finish_reason": "tool_calls"
+    },
+    {
+      "response_id": "qualification-plan",
+      "provider": "deterministic-mock",
+      "model": "qualification-mock-v1",
+      "structured_output": {
+        "steps": [
+          {"step_id": "search", "objective": "Search the bounded catalogue."},
+          {
+            "step_id": "validate",
+            "objective": "Validate extracted evidence.",
+            "depends_on": ["search"]
+          },
+          {
+            "step_id": "synthesise",
+            "objective": "Synthesise only validated evidence.",
+            "depends_on": ["validate"]
+          }
+        ]
+      },
+      "finish_reason": "stop"
+    },
+    {
+      "response_id": "qualification-critic",
+      "provider": "deterministic-mock",
+      "model": "qualification-mock-v1",
+      "structured_output": {
+        "accepted": false,
+        "issues": ["The universal claim is unsupported by evidence."]
+      },
+      "finish_reason": "stop"
+    },
+    {
+      "response_id": "qualification-stop",
+      "provider": "deterministic-mock",
+      "model": "qualification-mock-v1",
+      "structured_output": {
+        "should_stop": true,
+        "reason": "criteria_met"
+      },
+      "finish_reason": "stop"
+    },
+    {
+      "response_id": "qualification-malformed",
+      "provider": "deterministic-mock",
+      "model": "qualification-mock-v1",
+      "structured_output": {
+        "action": "loop_forever",
+        "reason": "This action is outside the schema."
+      },
+      "finish_reason": "stop"
+    },
+    {
+      "response_id": "qualification-recovery",
+      "provider": "deterministic-mock",
+      "model": "qualification-mock-v1",
+      "structured_output": {
+        "action": "retry",
+        "reason": "Retry once with the schema error included."
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}

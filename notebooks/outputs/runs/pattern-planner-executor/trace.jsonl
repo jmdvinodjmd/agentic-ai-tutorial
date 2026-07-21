@@ -1,3 +1,0 @@
-{"trace_schema_version":"1","run_id":"pattern-planner-executor","sequence":1,"timestamp":"2026-07-16T19:57:57.993194Z","event_type":"run_start","payload":{"pattern":"planner-executor"}}
-{"trace_schema_version":"1","run_id":"pattern-planner-executor","sequence":2,"timestamp":"2026-07-16T19:57:57.993776Z","event_type":"decision","payload":{"result":{"pattern":"planner-executor","plan":["search","extract","synthesise"],"completed":["search","extract","synthesise"],"limitation":"a poor plan constrains execution"}}}
-{"trace_schema_version":"1","run_id":"pattern-planner-executor","sequence":3,"timestamp":"2026-07-16T19:57:57.998852Z","event_type":"termination","payload":{"reason":"completed"}}

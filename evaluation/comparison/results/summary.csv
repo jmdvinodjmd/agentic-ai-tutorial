@@ -1,5 +1,0 @@
-comparison_schema_version,implementation,repetitions,task_completion_rate,final_answer_valid_rate,mean_evidence_precision,mean_evidence_recall,mean_tool_selection_validity,trajectory_valid_rate,failure_recovery,mean_model_calls,mean_tool_calls,mean_total_steps,mean_framework_specific_trace_events,mean_wall_latency_seconds,wall_latency_stddev_seconds,mean_python_peak_allocated_mb,python_peak_allocated_stddev_mb,mean_startup_overhead_seconds,startup_overhead_stddev_seconds
-1,plain-python,3,1.0,1.0,1.0,1.0,1.0,1.0,,4.0,3.0,4.0,0.0,0.4800854579953011,0.045602331128204755,0.877288818359375,0.05189345999952641,0.09827147233105886,0.03122033303636878
-1,langgraph,3,1.0,1.0,1.0,1.0,1.0,1.0,,4.0,3.0,4.0,9.0,0.6283476806711406,0.07735212697117456,1.0461225509643555,0.12961207496219845,0.45919549999719794,0.0044753757059902205
-1,crewai,3,1.0,1.0,1.0,1.0,1.0,1.0,,4.0,3.0,4.0,6.0,0.4053287780067573,0.035054712374787564,1.0871979395548503,0.06640691278564206,1.3700595969955127,0.09962450034451556
-1,openai-agents,3,1.0,1.0,1.0,1.0,1.0,1.0,,4.0,3.0,4.0,5.0,0.4719491526678515,0.01869580945242728,0.8251024881998698,0.006774905453751397,0.8745777086684635,0.07227886924884357

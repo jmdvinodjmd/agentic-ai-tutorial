@@ -104,6 +104,9 @@ class DeterministicMockClient:
                 provider=self.provider,
             )
         response = self._fixture.responses[self._next_step]
+        # A malformed response is still an observed model attempt. Consume it
+        # before validation so bounded retry logic can request the next result.
+        self._next_step += 1
         validate_offline_response(
             response,
             provider=self.provider,
@@ -111,5 +114,4 @@ class DeterministicMockClient:
             tools=tools,
             response_schema=response_schema,
         )
-        self._next_step += 1
         return response.model_copy(deep=True)

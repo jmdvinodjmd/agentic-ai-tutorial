@@ -54,7 +54,7 @@ def validate_offline_response(
 
 
 def response_schema_identity(response_schema: type[BaseModel] | None) -> str | None:
-    """Return the explicit stable identifier required for replay schemas."""
+    """Return the explicit stable identifier used in reproducibility records."""
     if response_schema is None:
         return None
     schema_id = getattr(response_schema, "schema_id", None)
