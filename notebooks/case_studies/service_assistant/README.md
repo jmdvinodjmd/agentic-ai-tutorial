@@ -4,10 +4,16 @@ Matched implementations: [plain Python](plain_python.ipynb),
 [LangGraph](langgraph.ipynb), [CrewAI](crewai.ipynb) and
 [OpenAI Agents](openai_agents.ipynb).
 
-All effects are local and simulated. The workflows demonstrate least privilege,
-exact-action approval, checkpoint/resume, failure-safe refusal, idempotency and
-duplicate-action detection.
+The case study follows seven matched stages:
 
-Each notebook's first code cell selects `mock`, `local` (Qwen), or `api`
-(Gemini). Change `MODEL_PROVIDER`, then use **Restart Kernel and Run All**; no
-terminal command is required after the notebook environment has been installed.
+`inspect_state → propose_action → authorise_action → checkpoint → execute_action → verify_effect → confirm`
+
+The user sets `SERVICE_REQUEST`, the exact approved action and `MODEL_PROVIDER`
+near the beginning of each notebook. The model may propose and confirm, but
+deterministic Python owns approval, execution, checkpoint/resume and duplicate
+suppression. All effects are local and simulated.
+
+The CrewAI implementation uses native `Agent`, `Task` and `Crew` abstractions;
+LangGraph expresses the stages as graph nodes; OpenAI Agents uses typed
+`Agent`/`Runner` calls. Use **Restart Kernel and Run All** after changing the
+provider.

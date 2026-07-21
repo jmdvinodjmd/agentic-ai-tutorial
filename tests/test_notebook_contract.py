@@ -33,8 +33,7 @@ def test_notebook_meets_delivery_contract(notebook_path: Path) -> None:
     assert "open in colab" in lowered
     assert "pip" in lowered and "==" in text
     assert "git" in text and "clone" in text
-    expected_branch = "main" if "patterns" in notebook_path.parts else "feature/notebook-rebuild"
-    assert expected_branch in text
+    assert "main" in text
     assert "mock" in lowered
     assert "runtime" in lowered and "cpu" in lowered
     assert "trace" in lowered

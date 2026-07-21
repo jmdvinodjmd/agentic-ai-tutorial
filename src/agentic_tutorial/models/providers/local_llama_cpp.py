@@ -258,15 +258,45 @@ class LocalLlamaCppClient:
             settings=effective,
         )
         request = RuntimeRequest(
-            messages=tuple(_message_payload(message) for message in messages),
+            messages=_request_messages(messages, response_schema),
             tools=tuple(_tool_payload(tool) for tool in tools),
             response_format=_response_format(response_schema),
             max_output_tokens=effective.max_output_tokens,
             temperature=effective.temperature,
             seed=effective.seed if effective.seed is not None else self.config.seed,
         )
+        completion = await self._complete(request)
+        self.last_completion = completion
         try:
-            completion = await asyncio.wait_for(
+            return _canonical_response(completion, self, response_schema)
+        except InvalidModelResponseError as first_error:
+            if response_schema is None:
+                raise
+
+            retry_request = request.model_copy(
+                update={
+                    "messages": (
+                        *request.messages,
+                        {
+                            "role": "user",
+                            "content": (
+                                "The previous response was incomplete or invalid. Return a "
+                                "shorter, complete JSON object only."
+                            ),
+                        },
+                    )
+                }
+            )
+            try:
+                completion = await self._complete(retry_request)
+                self.last_completion = completion
+                return _canonical_response(completion, self, response_schema)
+            except (InvalidModelResponseError, ModelTimeoutError):
+                raise first_error from first_error.cause
+
+    async def _complete(self, request: RuntimeRequest) -> RuntimeCompletion:
+        try:
+            return await asyncio.wait_for(
                 self.runtime.generate(request), timeout=self.config.timeout_seconds
             )
         except TimeoutError as error:
@@ -279,8 +309,6 @@ class LocalLlamaCppClient:
             raise InvalidModelResponseError(
                 "local llama.cpp runtime failed", provider=self.provider, cause=error
             ) from error
-        self.last_completion = completion
-        return _canonical_response(completion, self, response_schema)
 
 
 RuntimeFactory = Callable[[LocalLlamaCppConfig], LlamaCppRuntime]
@@ -391,6 +419,24 @@ def _message_payload(message: Message) -> dict[str, JsonValue]:
     return payload
 
 
+def _request_messages(
+    messages: Sequence[Message], response_schema: type[BaseModel] | None
+) -> tuple[dict[str, JsonValue], ...]:
+    payload = tuple(_message_payload(message) for message in messages)
+    if response_schema is None:
+        return payload
+    schema = json.dumps(response_schema.model_json_schema(), separators=(",", ":"))
+    instruction: dict[str, JsonValue] = {
+        "role": "system",
+        "content": (
+            "Return only one concise, complete JSON object matching this JSON Schema. "
+            "Do not include analysis, think tags, Markdown fences or commentary. "
+            f"Schema: {schema}"
+        ),
+    }
+    return (instruction, *payload)
+
+
 def _tool_payload(tool: ToolDefinition) -> dict[str, JsonValue]:
     return {
         "type": "function",
@@ -420,16 +466,21 @@ def _canonical_response(
     structured: dict[str, JsonValue] | None = None
     if response_schema is not None:
         if completion.content:
-            try:
-                candidate = json.loads(completion.content)
-                validated = response_schema.model_validate(candidate)
+            validation_error: ValueError | ValidationError | None = None
+            for candidate in _json_object_candidates(completion.content):
+                try:
+                    validated = response_schema.model_validate(candidate)
+                except (ValueError, ValidationError) as error:
+                    validation_error = error
+                    continue
                 structured = validated.model_dump(mode="json")
-            except (json.JSONDecodeError, ValidationError) as error:
+                break
+            if structured is None:
                 raise InvalidModelResponseError(
                     "local structured output does not satisfy the requested schema",
                     provider=client.provider,
-                    cause=error,
-                ) from error
+                    cause=validation_error,
+                ) from validation_error
         elif calls:
             candidate = {
                 "action": {
@@ -470,6 +521,30 @@ def _canonical_response(
     )
 
 
+def _json_object_candidates(content: str) -> tuple[dict[str, Any], ...]:
+    """Extract JSON objects even when a local chat model adds prose or think tags."""
+    decoder = json.JSONDecoder()
+    candidates: list[dict[str, Any]] = []
+    stripped = content.strip()
+    try:
+        loaded = json.loads(stripped)
+    except json.JSONDecodeError:
+        loaded = None
+    if isinstance(loaded, dict):
+        candidates.append(loaded)
+
+    for index, character in enumerate(content):
+        if character != "{":
+            continue
+        try:
+            loaded, _end = decoder.raw_decode(content[index:])
+        except json.JSONDecodeError:
+            continue
+        if isinstance(loaded, dict) and loaded not in candidates:
+            candidates.append(loaded)
+    return tuple(candidates)
+
+
 def _finish_reason(value: str, has_calls: bool) -> FinishReason:
     if has_calls:
         return FinishReason.TOOL_CALLS
@@ -499,7 +574,7 @@ def _parse_runtime_completion(
             latency_seconds=latency_seconds,
             peak_memory_mb=peak_memory_mb,
         )
-    except (KeyError, IndexError, TypeError, ValidationError) as error:
+    except (KeyError, IndexError, TypeError, json.JSONDecodeError, ValidationError) as error:
         raise InvalidModelResponseError(
             "llama.cpp returned an invalid completion payload",
             provider=PROVIDER_ID,

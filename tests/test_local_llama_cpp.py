@@ -26,6 +26,7 @@ from agentic_tutorial.models.providers.local_llama_cpp import (
     LocalModelMetadata,
     RuntimeCompletion,
     RuntimeToolCall,
+    _parse_runtime_completion,
     register_local_llama_cpp_provider,
     run_fake_runtime_smoke,
 )
@@ -117,6 +118,8 @@ def test_tool_and_response_schema_conversion(tmp_path: Path) -> None:
     request = runtime.requests[0]
     function = TypeAdapter(dict[str, JsonValue]).validate_python(request.tools[0]["function"])
     assert function["name"] == "lookup"
+    assert request.messages[0]["role"] == "system"
+    assert "concise, complete JSON" in str(request.messages[0]["content"])
     assert request.response_format is not None
     assert response.structured_output == {"answer": "ready"}
 
@@ -156,6 +159,75 @@ def test_malformed_structured_output_is_canonical_error(tmp_path: Path) -> None:
                 [Message(role=MessageRole.USER, content="answer")],
                 response_schema=StructuredAnswer,
             )
+        )
+
+
+@pytest.mark.parametrize(
+    "content",
+    [
+        '<think>Check the requested fields.</think>\n{"answer":"ready"}',
+        '```json\n{"answer":"ready"}\n```',
+    ],
+)
+def test_structured_output_tolerates_local_model_wrappers(tmp_path: Path, content: str) -> None:
+    client = _client(
+        tmp_path,
+        FakeLlamaCppRuntime([RuntimeCompletion(response_id="wrapped", content=content)]),
+    )
+
+    response = asyncio.run(
+        client.generate(
+            [Message(role=MessageRole.USER, content="answer")],
+            response_schema=StructuredAnswer,
+        )
+    )
+
+    assert response.structured_output == {"answer": "ready"}
+
+
+def test_incomplete_structured_output_gets_one_bounded_retry(tmp_path: Path) -> None:
+    runtime = FakeLlamaCppRuntime(
+        [
+            RuntimeCompletion(response_id="incomplete", content='{"answer":"'),
+            RuntimeCompletion(response_id="repaired", content='{"answer":"ready"}'),
+        ]
+    )
+    client = _client(tmp_path, runtime)
+
+    response = asyncio.run(
+        client.generate(
+            [Message(role=MessageRole.USER, content="answer")],
+            response_schema=StructuredAnswer,
+        )
+    )
+
+    assert response.response_id == "repaired"
+    assert response.structured_output == {"answer": "ready"}
+    assert len(runtime.requests) == 2
+    assert "previous response was incomplete" in str(runtime.requests[1].messages[-1]["content"])
+
+
+def test_malformed_tool_arguments_are_canonical_error() -> None:
+    with pytest.raises(InvalidModelResponseError, match="invalid completion payload"):
+        _parse_runtime_completion(
+            {
+                "id": "bad-tool",
+                "choices": [
+                    {
+                        "message": {
+                            "tool_calls": [
+                                {
+                                    "id": "call-1",
+                                    "function": {"name": "lookup", "arguments": "{"},
+                                }
+                            ]
+                        },
+                        "finish_reason": "tool_calls",
+                    }
+                ],
+            },
+            latency_seconds=0.0,
+            peak_memory_mb=None,
         )
 
 

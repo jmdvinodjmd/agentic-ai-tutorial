@@ -8,6 +8,21 @@ All four use the same bounded catalogue and decisions, isolate indirect prompt
 injection, preserve a claim-evidence ledger, report conflict and provenance,
 validate citations, critique once and abstain when support is insufficient.
 
+## Workflow
+
+All four implementations follow the same conceptual stages:
+
+`plan → retrieve → screen_evidence → extract_claims → validate_claims → synthesise → critique → report`
+
+The plain-Python notebook uses explicit functions, LangGraph represents the
+stages as graph nodes, CrewAI uses native `Agent`, `Task` and `Crew`
+abstractions with deterministic Python for safety and validation, and OpenAI
+Agents uses typed `Agent` and `Runner` calls.
+
+The user sets `RESEARCH_QUESTION` and `MODEL_PROVIDER` near the beginning of
+each notebook. Retrieval, safety screening, citation validation, budgets and
+termination remain deterministic rather than being delegated to the model.
+
 ## Model selection
 
 The first configuration cell in every case-study notebook accepts `mock`,
