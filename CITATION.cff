@@ -3,7 +3,9 @@ message: "Please cite this software repository."
 title: "Agentic AI Tutorial"
 type: software
 authors:
-  - name: "Agentic AI Tutorial contributors"
+  - name: "Vinod Kumar Chauhan "
+    orcid: "https://orcid.org/0000-0001-8195-548X"
+    affiliation: "University of Strathclyde UK"
 version: 0.1.0
 license: Apache-2.0
 abstract: "An offline-first teaching repository and reproducible framework comparison for agentic AI."
