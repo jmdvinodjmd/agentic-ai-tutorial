@@ -9,6 +9,7 @@ permissions:
 
 env:
   MODEL_PROVIDER: mock
+  PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
   UV_FROZEN: "1"
   UV_NO_PROGRESS: "1"
 
@@ -26,9 +27,9 @@ jobs:
       - run: uv lock --check
       - run: uv sync --dev --frozen
       - name: Format check
-        run: uv run ruff format --check src tests
+        run: uv run ruff format --check .
       - name: Lint
-        run: uv run ruff check src tests
+        run: uv run ruff check .
       - name: Strict contract typing
         run: uv run mypy src tests
       - name: Contract and mock notebook tests
@@ -58,5 +59,5 @@ jobs:
           enable-cache: true
       - run: uv python install 3.11
       - run: uv sync --dev --extra ${{ matrix.extra }} --frozen
-      - name: Execute matched framework patterns with mock decisions
+      - name: Execute matched framework notebooks with mock decisions
         run: uv run pytest -q tests/test_notebook_mock_execution.py -k ${{ matrix.selector }}

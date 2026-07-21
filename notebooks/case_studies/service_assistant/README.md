@@ -1,5 +1,9 @@
-# Service-assistant notebooks
+# Simulated service assistant
 
-This directory will contain matched `plain_python.ipynb`, `langgraph.ipynb`,
-`crewai.ipynb` and `openai_agents.ipynb` implementations against a fully
-simulated service environment. No real account or transaction API will be used.
+Matched implementations: [plain Python](plain_python.ipynb),
+[LangGraph](langgraph.ipynb), [CrewAI](crewai.ipynb) and
+[OpenAI Agents](openai_agents.ipynb).
+
+All effects are local and simulated. The workflows demonstrate least privilege,
+exact-action approval, checkpoint/resume, failure-safe refusal, idempotency and
+duplicate-action detection.

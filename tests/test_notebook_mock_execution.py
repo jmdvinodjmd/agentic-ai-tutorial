@@ -23,10 +23,16 @@ PATTERN_NOTEBOOKS = (
 CASE_NOTEBOOKS = (
     (ROOT / "notebooks/case_studies/research_assistant/plain_python.ipynb", None),
     (ROOT / "notebooks/case_studies/research_assistant/langgraph.ipynb", "langgraph"),
+    (ROOT / "notebooks/case_studies/research_assistant/crewai.ipynb", "crewai"),
+    (ROOT / "notebooks/case_studies/research_assistant/openai_agents.ipynb", "agents"),
     (ROOT / "notebooks/case_studies/data_analysis_assistant/plain_python.ipynb", None),
     (ROOT / "notebooks/case_studies/data_analysis_assistant/langgraph.ipynb", "langgraph"),
+    (ROOT / "notebooks/case_studies/data_analysis_assistant/crewai.ipynb", "crewai"),
+    (ROOT / "notebooks/case_studies/data_analysis_assistant/openai_agents.ipynb", "agents"),
     (ROOT / "notebooks/case_studies/service_assistant/plain_python.ipynb", None),
     (ROOT / "notebooks/case_studies/service_assistant/langgraph.ipynb", "langgraph"),
+    (ROOT / "notebooks/case_studies/service_assistant/crewai.ipynb", "crewai"),
+    (ROOT / "notebooks/case_studies/service_assistant/openai_agents.ipynb", "agents"),
 )
 
 

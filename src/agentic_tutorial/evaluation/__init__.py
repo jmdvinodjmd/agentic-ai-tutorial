@@ -1,5 +1,6 @@
 """Reusable evaluation contracts for the notebook-first tutorial."""
 
+from agentic_tutorial.evaluation.fault_injection import MalformedResponseFaultClient
 from agentic_tutorial.evaluation.qualification import (
     ModelCandidate,
     QualificationCheck,
@@ -9,6 +10,7 @@ from agentic_tutorial.evaluation.qualification import (
 )
 
 __all__ = [
+    "MalformedResponseFaultClient",
     "ModelCandidate",
     "QualificationCheck",
     "QualificationReport",

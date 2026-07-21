@@ -1,22 +1,26 @@
 # Notebook-first learning path
 
-The notebooks are the tutorial rather than wrappers around hidden workflows.
+The notebooks are the tutorial: prompts, state, decisions, execution boundaries,
+traces, stopping rules, evaluations and limitations are visible in each file.
 
 ## Patterns
 
-- [Plain Python patterns](patterns/plain_python_patterns.ipynb) currently
-  implements the first reviewed prompt-chaining example.
-- `langgraph_patterns.ipynb`, `crewai_patterns.ipynb` and
-  `openai_agents_patterns.ipynb` will follow after the plain-Python pattern set
-  is complete and reviewed.
+- [Plain Python](patterns/plain_python_patterns.ipynb)
+- [LangGraph](patterns/langgraph_patterns.ipynb)
+- [CrewAI Flow](patterns/crewai_patterns.ipynb)
+- [OpenAI Agents SDK](patterns/openai_agents_patterns.ipynb)
+
+Each implements prompt chaining, routing, parallelisation, ReAct, planner–executor,
+critic–reviser and orchestrator–worker over matched fixtures and acceptance checks.
 
 ## Case studies
 
-Each case-study directory records the planned matched implementations:
+| Case | Plain Python | LangGraph | CrewAI | OpenAI Agents |
+|---|---|---|---|---|
+| Research assistant | [open](case_studies/research_assistant/plain_python.ipynb) | [open](case_studies/research_assistant/langgraph.ipynb) | [open](case_studies/research_assistant/crewai.ipynb) | [open](case_studies/research_assistant/openai_agents.ipynb) |
+| Data analysis | [open](case_studies/data_analysis_assistant/plain_python.ipynb) | [open](case_studies/data_analysis_assistant/langgraph.ipynb) | [open](case_studies/data_analysis_assistant/crewai.ipynb) | [open](case_studies/data_analysis_assistant/openai_agents.ipynb) |
+| Simulated service | [open](case_studies/service_assistant/plain_python.ipynb) | [open](case_studies/service_assistant/langgraph.ipynb) | [open](case_studies/service_assistant/crewai.ipynb) | [open](case_studies/service_assistant/openai_agents.ipynb) |
 
-- [Research assistant](case_studies/research_assistant/README.md)
-- [Data-analysis assistant](case_studies/data_analysis_assistant/README.md)
-- [Simulated service assistant](case_studies/service_assistant/README.md)
-
-Every completed notebook must run top-to-bottom with the mock backend, expose
-its important intermediate state and finish with evaluation and limitations.
+All notebooks default to versioned mock decisions, run top-to-bottom without
+credentials and finish with component, trajectory, task, safety and repeated-run
+evaluation. Framework extras are installed only for the corresponding notebook.

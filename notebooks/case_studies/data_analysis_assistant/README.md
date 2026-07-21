@@ -1,5 +1,9 @@
-# Data-analysis-assistant notebooks
+# Data-analysis assistant
 
-This directory will contain matched `plain_python.ipynb`, `langgraph.ipynb`,
-`crewai.ipynb` and `openai_agents.ipynb` implementations over one versioned
-local dataset. No notebook is created until that case-study phase is approved.
+Matched implementations: [plain Python](plain_python.ipynb),
+[LangGraph](langgraph.ipynb), [CrewAI](crewai.ipynb) and
+[OpenAI Agents](openai_agents.ipynb).
+
+The LLM selects a typed allowlisted analysis but never supplies executable code
+or numeric results. Python validates columns, computes the aggregation, checks a
+versioned oracle and records dataset provenance.

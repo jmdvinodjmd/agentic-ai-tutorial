@@ -30,7 +30,7 @@ packages = ["src/agentic_tutorial"]
 [tool.pytest.ini_options]
 addopts = "--strict-config --strict-markers"
 testpaths = ["tests"]
-markers = ["slow: optional tests requiring a separately installed local model"]
+markers = ["slow: optional tests requiring a local model or live provider"]
 filterwarnings = ["ignore:.*:DeprecationWarning:crewai.*"]
 
 [tool.ruff]

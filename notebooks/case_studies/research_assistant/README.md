@@ -1,6 +1,9 @@
-# Research-assistant notebooks
+# Research assistant
 
-This directory will contain matched `plain_python.ipynb`, `langgraph.ipynb`,
-`crewai.ipynb` and `openai_agents.ipynb` implementations of the paper's bounded
-household-food-waste evidence-synthesis task. They are intentionally deferred
-until the shared contracts and first plain-Python pattern have been reviewed.
+Matched household-food-waste evidence synthesis in
+[plain Python](plain_python.ipynb), [LangGraph](langgraph.ipynb),
+[CrewAI](crewai.ipynb) and [OpenAI Agents](openai_agents.ipynb).
+
+All four use the same bounded catalogue and decisions, isolate indirect prompt
+injection, preserve a claim-evidence ledger, report conflict and provenance,
+validate citations, critique once and abstain when support is insufficient.
