@@ -45,6 +45,7 @@ outputs/runs/*
 !outputs/runs/.gitkeep
 
 # Editor state
+.ipynb_checkpoints/
 .idea/
 .vscode/
 *.swp
