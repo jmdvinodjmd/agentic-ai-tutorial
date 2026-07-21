@@ -56,7 +56,7 @@ class GeminiClient:
     ) -> None:
         if not api_key:
             raise AuthenticationError(
-                "GEMINI_API_KEY is required for MODEL_PROVIDER=gemini",
+                "GEMINI_API_KEY is required for MODEL_PROVIDER=api",
                 provider=PROVIDER_ID,
             )
         self._model = model

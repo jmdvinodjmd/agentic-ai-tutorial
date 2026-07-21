@@ -12,7 +12,7 @@ license = "Apache-2.0"
 dependencies = ["pydantic>=2.11,<3"]
 
 [project.optional-dependencies]
-crewai = ["crewai>=1.15.2,<1.16"]
+crewai = ["appdirs>=1.4.4,<2", "crewai>=1.15.2,<1.16"]
 langgraph = ["langgraph>=1.2.9,<1.3"]
 local-llama-cpp = ["llama-cpp-python>=0.3.34,<0.4"]
 openai-agents = ["openai-agents>=0.17.4,<0.18"]
@@ -22,6 +22,10 @@ dev = [
     "mypy>=1.15,<2",
     "pytest>=8.3,<9",
     "ruff>=0.11,<1",
+]
+notebooks = [
+    "ipykernel>=6.29,<7",
+    "jupyterlab>=4.4,<5",
 ]
 
 [tool.hatch.build.targets.wheel]

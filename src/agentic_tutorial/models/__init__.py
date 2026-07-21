@@ -29,6 +29,7 @@ from agentic_tutorial.models.providers import (
 )
 from agentic_tutorial.models.registry import (
     ProviderRegistry,
+    create_model,
     create_model_client,
     provider_registry,
 )
@@ -55,6 +56,7 @@ __all__ = [
     "ProviderRegistry",
     "RateLimitError",
     "UnsupportedCapabilityError",
+    "create_model",
     "create_model_client",
     "model_config_from_environment",
     "normalise_provider_exception",

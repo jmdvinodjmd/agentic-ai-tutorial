@@ -20,7 +20,7 @@ def test_gemini_passes_all_qualification_checks() -> None:
     client = create_model_client(
         ModelConfig(
             provider="gemini",
-            model=os.getenv("MODEL_NAME", "gemini-2.5-flash-lite"),
+            model=os.getenv("MODEL_NAME", "gemini-3.1-flash-lite"),
             execution_mode="live",
             settings=GenerationSettings(temperature=0.0, max_output_tokens=256),
             options={"timeout_seconds": 60.0},

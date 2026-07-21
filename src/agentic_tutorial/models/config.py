@@ -18,9 +18,9 @@ class ModelConfigBase(BaseModel):
 class ModelProvider(StrEnum):
     """Public provider names accepted through ``MODEL_PROVIDER``."""
 
-    LOCAL = "local"
-    GEMINI = "gemini"
     MOCK = "mock"
+    LOCAL = "local"
+    API = "api"
 
 
 class ModelCapabilities(ModelConfigBase):
@@ -54,7 +54,7 @@ class ModelConfig(ModelConfigBase):
 def model_config_from_environment(
     environment: Mapping[str, str],
     *,
-    mock_fixture_path: str,
+    mock_fixture_path: str | None = None,
 ) -> ModelConfig:
     """Build the selected model configuration without reading credentials.
 
@@ -71,6 +71,8 @@ def model_config_from_environment(
         raise ValueError(f"MODEL_PROVIDER must be one of: {choices}") from error
 
     if provider is ModelProvider.MOCK:
+        if not mock_fixture_path:
+            raise ValueError("mock_fixture_path is required for MODEL_PROVIDER=mock")
         return ModelConfig(
             provider="deterministic-mock",
             model=environment.get("MODEL_NAME", "qualification-mock-v1"),
@@ -78,18 +80,22 @@ def model_config_from_environment(
             options={"fixture_path": mock_fixture_path},
         )
     if provider is ModelProvider.LOCAL:
+        options: dict[str, JsonValue] = {
+            "metadata_path": environment.get(
+                "MODEL_METADATA_PATH", "models/local/model_metadata.json"
+            )
+        }
+        model_path = environment.get("AGENTIC_TUTORIAL_LOCAL_MODEL_PATH")
+        if model_path:
+            options["model_path"] = model_path
         return ModelConfig(
             provider="local-llama-cpp",
             model=environment.get("MODEL_NAME", "Qwen3-0.6B-Q8_0"),
             execution_mode="local",
-            options={
-                "metadata_path": environment.get(
-                    "MODEL_METADATA_PATH", "models/local/model_metadata.json"
-                )
-            },
+            options=options,
         )
     return ModelConfig(
         provider="gemini",
-        model=environment.get("MODEL_NAME", "gemini-2.5-flash-lite"),
+        model=environment.get("MODEL_NAME", "gemini-3.1-flash-lite"),
         execution_mode="live",
     )

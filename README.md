@@ -7,29 +7,109 @@ handling, evaluation and safety decisions stay visible in the notebooks.
 
 ## Set-up and execution modes
 
-Python 3.11 and [uv](https://docs.astral.sh/uv/) are required.
+### Shared requirements
+
+All approaches require Git, Python 3.11 and
+[`uv`](https://docs.astral.sh/uv/). Clone the repository, enter its directory,
+then install Jupyter and all three orchestration frameworks:
 
 ```bash
-uv sync --dev --frozen
-MODEL_PROVIDER=mock uv run pytest
+make setup-notebooks
+make notebooks
 ```
 
-The default `mock` provider is deterministic, offline and used by CI. Optional
-framework environments are installed independently:
+The first command creates `.venv`, installs JupyterLab, LangGraph, CrewAI and
+OpenAI Agents, and registers the `Python 3.11 (agentic-ai-tutorial)` kernel. The
+second opens JupyterLab. Select that kernel if you open a notebook directly in
+VS Code or another editor.
+
+Pattern notebooks intentionally use only the deterministic mock model. Every
+case-study notebook has this configuration near the top:
+
+```python
+MODEL_PROVIDER = "mock"  # mock | local | api
+```
+
+Change only this value, restart the kernel, and choose **Run All**. The three
+approaches share the same notebook workflow but have different requirements:
+
+| Provider | Additional requirements | Network use | Typical purpose |
+|---|---|---|---|
+| `mock` | None | None | Fast, reproducible learning and framework comparison |
+| `local` | llama.cpp package and the Qwen GGUF download | Download only; inference is offline | Real model inference on the user's laptop |
+| `api` | Gemini API key, account, internet access and available quota | Each model call uses Gemini | Hosted-model experimentation |
+
+### Mock: simplest and default
+
+Leave `MODEL_PROVIDER = "mock"` and run the notebook. Mock requires no API key,
+model download or model-serving process. It is deterministic, runs on CPU and
+is the mode used by the automated tests. The framework packages are still
+needed for the corresponding LangGraph, CrewAI or OpenAI Agents notebook.
+
+### Local: Qwen on the laptop
+
+Local inference is not installed or downloaded automatically. The model file is
+about 640 MB and is excluded from Git. Install the notebook environment with
+the additional llama.cpp package:
+
+```bash
+uv sync --group notebooks \
+  --extra langgraph \
+  --extra crewai \
+  --extra openai-agents \
+  --extra local-llama-cpp \
+  --frozen
+uv run --no-sync python -m ipykernel install --user \
+  --name agentic-ai-tutorial \
+  --display-name "Python 3.11 (agentic-ai-tutorial)"
+```
+
+Some platforms may need a C/C++ build toolchain if a compatible
+`llama-cpp-python` wheel is unavailable. Download the recorded Qwen model to the
+path expected by every case-study notebook, then verify it:
+
+```bash
+curl -L --fail \
+  --output models/local/Qwen3-0.6B-Q8_0.gguf \
+  https://huggingface.co/Qwen/Qwen3-0.6B-GGUF/resolve/1eaf4d9/Qwen3-0.6B-Q8_0.gguf
+shasum -a 256 models/local/Qwen3-0.6B-Q8_0.gguf
+```
+
+Expected SHA-256:
+`9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031`.
+Launch Jupyter without changing the installed extras:
+
+```bash
+uv run --no-sync jupyter lab notebooks
+```
+
+Set `MODEL_PROVIDER = "local"`, restart the kernel and run all cells. The
+notebook creates Qwen when the workflow runs; no separate model server or
+terminal process is required. Restarting or shutting down the kernel guarantees
+that its memory is released. See the [local model guide](models/local/README.md)
+for provenance and optional qualification tests.
+
+### API: Gemini
+
+Gemini uses `gemini-3.1-flash-lite` by default. It requires a Gemini API key,
+internet access and sufficient provider quota; availability, limits and charges
+are controlled by Google. Set `MODEL_PROVIDER = "api"`, restart the kernel and
+run all cells. If `GEMINI_API_KEY` is not already available, the notebook asks
+for the key through a hidden input prompt, so no terminal command is required.
+
+With `SAVE_API_CREDENTIAL = True`, the key is reused from
+`.private/gemini_api_key`. This ignored file has user-only permissions but is
+local plaintext storage; set the option to `False` on a shared computer and
+shut down the kernel when finished. The notebooks never print the key.
+
+For non-notebook development, the framework extras can also be installed
+individually:
 
 ```bash
 uv sync --dev --extra langgraph --frozen
 uv sync --dev --extra crewai --frozen
 uv sync --dev --extra openai-agents --frozen
 ```
-
-`MODEL_PROVIDER=gemini` uses
-[`gemini-2.5-flash-lite`](https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-lite)
-by default, is available on the documented
-[free tier](https://ai.google.dev/gemini-api/docs/pricing), and reads only
-`GEMINI_API_KEY`. `MODEL_PROVIDER=local` uses llama.cpp and requires a separately
-downloaded GGUF path in `AGENTIC_TUTORIAL_LOCAL_MODEL_PATH`; weights are never
-downloaded by tests or notebooks. See [local model status](models/local/README.md).
 
 ## Notebook map
 
@@ -98,3 +178,24 @@ or downloads model weights.
 ## Licence
 
 Apache License 2.0. See [LICENSE](LICENSE).
+
+## Citation
+
+If you use this tutorial in teaching, research or other work, please cite:
+
+```bibtex
+@misc{chauhan2026practical,
+  author       = {Vinod Kumar Chauhan},
+  title        = {A Practical Tutorial on Agentic AI},
+  year         = {2026},
+  howpublished = {GitHub repository},
+  url          = {https://github.com/jmdvinodjmd/agentic-ai-tutorial}
+}
+```
+
+## Disclaimer
+
+This repository is provided solely for learning and explanatory purposes. Its
+examples are simplified and may contain errors; they are not production-ready
+systems or professional advice. Use, modify and run the material at your own
+risk, and independently review it before applying it to real systems or data.

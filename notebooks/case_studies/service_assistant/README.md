@@ -7,3 +7,7 @@ Matched implementations: [plain Python](plain_python.ipynb),
 All effects are local and simulated. The workflows demonstrate least privilege,
 exact-action approval, checkpoint/resume, failure-safe refusal, idempotency and
 duplicate-action detection.
+
+Each notebook's first code cell selects `mock`, `local` (Qwen), or `api`
+(Gemini). Change `MODEL_PROVIDER`, then use **Restart Kernel and Run All**; no
+terminal command is required after the notebook environment has been installed.
