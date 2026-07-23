@@ -122,6 +122,9 @@ uv sync --dev --extra openai-agents --frozen
 
 Every notebook contains its own Open in Colab badge. The
 [notebook guide](notebooks/README.md) describes the matched learning path.
+Case studies that use only the most appropriate framework are discoverable in
+the extensible [independent case-study catalogue](notebooks/case_studies/independent/);
+new cases are added there without changing this framework-comparison table.
 
 ### Colab links
 
@@ -129,6 +132,7 @@ Every notebook contains its own Open in Colab badge. The
 - Research assistant: [plain Python](https://colab.research.google.com/github/jmdvinodjmd/agentic-ai-tutorial/blob/main/notebooks/case_studies/research_assistant/plain_python.ipynb), [LangGraph](https://colab.research.google.com/github/jmdvinodjmd/agentic-ai-tutorial/blob/main/notebooks/case_studies/research_assistant/langgraph.ipynb), [CrewAI](https://colab.research.google.com/github/jmdvinodjmd/agentic-ai-tutorial/blob/main/notebooks/case_studies/research_assistant/crewai.ipynb), [OpenAI Agents](https://colab.research.google.com/github/jmdvinodjmd/agentic-ai-tutorial/blob/main/notebooks/case_studies/research_assistant/openai_agents.ipynb).
 - Data analysis: [plain Python](https://colab.research.google.com/github/jmdvinodjmd/agentic-ai-tutorial/blob/main/notebooks/case_studies/data_analysis_assistant/plain_python.ipynb), [LangGraph](https://colab.research.google.com/github/jmdvinodjmd/agentic-ai-tutorial/blob/main/notebooks/case_studies/data_analysis_assistant/langgraph.ipynb), [CrewAI](https://colab.research.google.com/github/jmdvinodjmd/agentic-ai-tutorial/blob/main/notebooks/case_studies/data_analysis_assistant/crewai.ipynb), [OpenAI Agents](https://colab.research.google.com/github/jmdvinodjmd/agentic-ai-tutorial/blob/main/notebooks/case_studies/data_analysis_assistant/openai_agents.ipynb).
 - Simulated service: [plain Python](https://colab.research.google.com/github/jmdvinodjmd/agentic-ai-tutorial/blob/main/notebooks/case_studies/service_assistant/plain_python.ipynb), [LangGraph](https://colab.research.google.com/github/jmdvinodjmd/agentic-ai-tutorial/blob/main/notebooks/case_studies/service_assistant/langgraph.ipynb), [CrewAI](https://colab.research.google.com/github/jmdvinodjmd/agentic-ai-tutorial/blob/main/notebooks/case_studies/service_assistant/crewai.ipynb), [OpenAI Agents](https://colab.research.google.com/github/jmdvinodjmd/agentic-ai-tutorial/blob/main/notebooks/case_studies/service_assistant/openai_agents.ipynb).
+- Independent cases: browse the [case-study catalogue](notebooks/case_studies/independent/); each case README provides its current Colab link.
 
 ## Paper-to-notebook map
 

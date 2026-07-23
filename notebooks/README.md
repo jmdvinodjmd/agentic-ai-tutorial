@@ -36,6 +36,13 @@ comparisons remain reproducible.
 | Data analysis | [open](case_studies/data_analysis_assistant/plain_python.ipynb) | [open](case_studies/data_analysis_assistant/langgraph.ipynb) | [open](case_studies/data_analysis_assistant/crewai.ipynb) | [open](case_studies/data_analysis_assistant/openai_agents.ipynb) |
 | Simulated service | [open](case_studies/service_assistant/plain_python.ipynb) | [open](case_studies/service_assistant/langgraph.ipynb) | [open](case_studies/service_assistant/crewai.ipynb) | [open](case_studies/service_assistant/openai_agents.ipynb) |
 
+Case studies that do not need a four-framework comparison live in the
+[independent case-study catalogue](case_studies/independent/). Each case owns
+its notebooks, documentation and additional dependency setup. Adding another
+independent case therefore requires only a new case directory, not edits to
+this table or the common project environment. See the
+[case-study contribution convention](case_studies/README.md).
+
 Case-study notebooks begin with `MODEL_PROVIDER = "mock"  # mock | local | api`.
 Change this one value and use **Restart Kernel and Run All**. `local` uses the
 lightweight Qwen model in `models/local`; `api` uses Gemini and requests a key

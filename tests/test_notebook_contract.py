@@ -11,6 +11,9 @@ import pytest
 ROOT = Path(__file__).parents[1]
 FRAMEWORKS = ("plain_python", "langgraph", "crewai", "openai_agents")
 CASES = ("research_assistant", "data_analysis_assistant", "service_assistant")
+INDEPENDENT_NOTEBOOKS = tuple(
+    sorted((ROOT / "notebooks/case_studies/independent").glob("*/*.ipynb"))
+)
 EXPECTED_NOTEBOOKS = (
     ROOT / "notebooks/patterns/plain_python_patterns.ipynb",
     ROOT / "notebooks/patterns/langgraph_patterns.ipynb",
@@ -21,6 +24,7 @@ EXPECTED_NOTEBOOKS = (
         for case in CASES
         for framework in FRAMEWORKS
     ),
+    *INDEPENDENT_NOTEBOOKS,
 )
 
 
@@ -55,7 +59,9 @@ def test_notebook_meets_delivery_contract(notebook_path: Path) -> None:
 
 def test_notebook_set_and_removed_legacy_roots_are_exact() -> None:
     actual = set((ROOT / "notebooks").glob("patterns/*.ipynb")) | set(
-        (ROOT / "notebooks").glob("case_studies/*/*.ipynb")
+        path
+        for path in (ROOT / "notebooks/case_studies").rglob("*.ipynb")
+        if ".ipynb_checkpoints" not in path.parts
     )
     assert actual == set(EXPECTED_NOTEBOOKS)
     for obsolete in (
